@@ -1,0 +1,69 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-07-03",
+  "welcomeMessage": "👋 欢迎使用 CMS Knowledge Bot！\n\n我是你的 CMS 操作助手，可以回答各类操作问题。\n\n🔍 你可以：\n• 点击下方快速问题开始\n• 输入自己的问题\n• 点击「刷新知识库」获取最新内容",
+  "quickQuestions": [
+    {
+      "id": 1,
+      "question": "如何创建员工账户？",
+      "category": "用户管理",
+      "priority": "high"
+    },
+    {
+      "id": 2,
+      "question": "如何推送优惠券？",
+      "category": "营销功能",
+      "priority": "high"
+    },
+    {
+      "id": 3,
+      "question": "会员如何添加积分？",
+      "category": "会员管理",
+      "priority": "high"
+    },
+    {
+      "id": 4,
+      "question": "如何导出报表？",
+      "category": "数据分析",
+      "priority": "medium"
+    },
+    {
+      "id": 5,
+      "question": "忘记密码怎么办？",
+      "category": "账户管理",
+      "priority": "medium"
+    },
+    {
+      "id": 6,
+      "question": "如何配置前端页面？",
+      "category": "系统配置",
+      "priority": "medium"
+    },
+    {
+      "id": 7,
+      "question": "POS密钥如何轮换？",
+      "category": "安全设置",
+      "priority": "low"
+    },
+    {
+      "id": 8,
+      "question": "如何修改会员信息？",
+      "category": "会员管理",
+      "priority": "high"
+    }
+  ],
+  "keywordMapping": {
+    "员工": ["员工", "职员", "工作", "人员"],
+    "员工账户": ["员工", "职员", "账户", "员工管理"],
+    "创建员工": ["创建", "添加", "新增", "员工", "建立员工"],
+    "会员": ["会员", "用户", "客户", "使用者"],
+    "积分": ["积分", "点数", "point"],
+    "添加积分": ["添加", "增加", "发放", "积分", "奖励积分"],
+    "优惠券": ["优惠券", "coupon", "折扣券", "优惠"],
+    "推送优惠券": ["推送", "发送", "发放", "优惠券", "优惠"],
+    "报表": ["报表", "报告", "数据", "统计"],
+    "导出": ["导出", "下载", "输出", "export"],
+    "登录": ["登录", "登入", "login"],
+    "密码": ["密码", "password", "密钥"]
+  }
+}
