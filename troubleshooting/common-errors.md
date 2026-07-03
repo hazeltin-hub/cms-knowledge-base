@@ -1,13 +1,13 @@
-# 常见错误及解决方案
+# 常見錯誤及解決方案
 
-## 标签
+## 標簽
 `#error` `#troubleshooting` `#api`
 
-## API 错误
+## API 錯誤
 
 ### 401 Unauthorized
 
-**错误信息**：
+**錯誤信息**：
 ```json
 {
   "error": "Unauthorized",
@@ -17,11 +17,11 @@
 ```
 
 **原因**：
-- JWT Token 已过期
-- Token 格式错误
-- API 密钥无效
+- JWT Token 已過期
+- Token 格式錯誤
+- API 密鑰無效
 
-**解决方案**：
+**解決方案**：
 ```javascript
 // 1. 刷新 Token
 POST /api/auth/refresh
@@ -29,14 +29,14 @@ POST /api/auth/refresh
   "refreshToken": "your_refresh_token"
 }
 
-// 2. 重新登录
+// 2. 重新登錄
 POST /api/auth/login
 {
   "email": "user@example.com",
   "password": "password"
 }
 
-// 3. 更新请求头
+// 3. 更新請求頭
 headers: {
   "Authorization": "Bearer NEW_TOKEN"
 }
@@ -44,7 +44,7 @@ headers: {
 
 ### 403 Forbidden
 
-**错误信息**：
+**錯誤信息**：
 ```json
 {
   "error": "Forbidden",
@@ -54,18 +54,18 @@ headers: {
 ```
 
 **原因**：
-- 用户角色权限不足
-- 尝试访问受保护的资源
-- API 令牌权限不足
+- 用戶角色權限不足
+- 嘗試訪問受保護的資源
+- API 令牌權限不足
 
-**解决方案**：
-1. 检查用户角色权限
-2. 联系管理员申请权限
-3. 确认访问的资源是否存在
+**解決方案**：
+1. 檢查用戶角色權限
+2. 聯系管理員申請權限
+3. 確認訪問的資源是否存在
 
 ### 404 Not Found
 
-**错误信息**：
+**錯誤信息**：
 ```json
 {
   "error": "Not Found",
@@ -75,22 +75,22 @@ headers: {
 ```
 
 **原因**：
-- 资源 ID 不存在
-- 路径错误
-- 资源已被删除
+- 資源 ID 不存在
+- 路徑錯誤
+- 資源已被刪除
 
-**解决方案**：
+**解決方案**：
 ```javascript
-// 检查资源是否存在
+// 檢查資源是否存在
 GET /api/content/{id}
 
-// 如果返回 404，说明资源不存在
-// 请检查 ID 是否正确
+// 如果返回 404，說明資源不存在
+// 請檢查 ID 是否正確
 ```
 
 ### 429 Too Many Requests
 
-**错误信息**：
+**錯誤信息**：
 ```json
 {
   "error": "Too Many Requests",
@@ -101,16 +101,16 @@ GET /api/content/{id}
 ```
 
 **原因**：
-- API 调用频率超限
-- 短时间内发送过多请求
+- API 調用頻率超限
+- 短時間內發送過多請求
 
-**解决方案**：
-1. 等待 `retryAfter` 指定的时间（秒）
-2. 实现指数退避重试
-3. 优化请求频率
+**解決方案**：
+1. 等待 `retryAfter` 指定的時間（秒）
+2. 實現指數退避重試
+3. 優化請求頻率
 
 ```javascript
-// 重试策略
+// 重試策略
 async function fetchWithRetry(url, options, maxRetries = 3) {
   for (let i = 0; i < maxRetries; i++) {
     try {
@@ -130,7 +130,7 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
 
 ### 500 Internal Server Error
 
-**错误信息**：
+**錯誤信息**：
 ```json
 {
   "error": "Internal Server Error",
@@ -140,55 +140,55 @@ async function fetchWithRetry(url, options, maxRetries = 3) {
 ```
 
 **原因**：
-- 服务器内部错误
-- 数据库连接失败
-- 第三方服务故障
+- 服務器內部錯誤
+- 數據庫連接失敗
+- 第三方服務故障
 
-**解决方案**：
-1. 检查服务器日志
-2. 验证请求数据格式
-3. 联系技术支持
+**解決方案**：
+1. 檢查服務器日志
+2. 驗證請求數據格式
+3. 聯系技術支持
 
-## 性能问题
+## 性能問題
 
-### 响应时间过长
+### 響應時間過長
 
-**症状**：API 响应时间超过 5 秒
+**症狀**：API 響應時間超過 5 秒
 
 **可能原因**：
-- 数据库查询慢
-- 网络延迟
-- 服务器负载高
+- 數據庫查詢慢
+- 網絡延遲
+- 服務器負載高
 
-**优化建议**：
-1. 使用查询限制和分页
-2. 添加适当的索引
-3. 启用缓存
+**優化建議**：
+1. 使用查詢限制和分頁
+2. 添加適當的索引
+3. 啟用緩存
 4. 使用 CDN
 
 ```javascript
-// 优化查询
+// 優化查詢
 GET /api/content?limit=10&page=1&fields=title,excerpt,status
 
-// 启用缓存
+// 啟用緩存
 headers: {
   "Cache-Control": "max-age=3600"
 }
 ```
 
-## 数据问题
+## 數據問題
 
-### 数据同步失败
+### 數據同步失敗
 
-**症状**：多渠道发布时部分渠道失败
+**症狀**：多渠道發布時部分渠道失敗
 
-**解决方案**：
-1. 检查第三方 API 密钥
-2. 验证网络连接
-3. 查看发布日志
-4. 手动重新发布
+**解決方案**：
+1. 檢查第三方 API 密鑰
+2. 驗證網絡連接
+3. 查看發布日志
+4. 手動重新發布
 
 ---
 
-**相关文档**：[API 参考](../api-reference/endpoints.md)
-**最后更新**：2026-07-03
+**相關文檔**：[API 參考](../api-reference/endpoints.md)
+**最後更新**：2026-07-03
