@@ -48,11 +48,19 @@
 
 - **AdminAction** - 400+行詳細代碼參考，15個API端點分析
 
+### FAQ 和問題追蹤（2個）
+
+- **Company Brand FAQ** - 基於實際Excel教學材料的35個FAQ問題
+- **Company Brand 問題追蹤** - 正式launch後的問題追蹤和改進機制
+
 ## 📊 統計
 
 - **操作指南數量**：9個
 - **代碼參考數量**：1個
-- **文檔總行數**：8,000+ 行
+- **FAQ 文檔數量**：1個（35個問題）
+- **問題追蹤文檔**：1個
+- **實際驗證的 Fields**：150+ 個（基於Excel教學材料）
+- **文檔總行數**：10,000+ 行
 - **Company tab 子模塊**：5個（All Companies、Company Groups、Brands、Shops、Featured Items）
 - **覆蓋模塊**：登錄、密碼、員工、會員、儀表板、報表、應用配置、推送、完整組織架構
 
