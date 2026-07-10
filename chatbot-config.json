@@ -1,12 +1,12 @@
 {
-  "version": "2.0",
-  "lastUpdated": "2026-07-09",
-  "welcomeMessage": "👋 歡迎使用 CMS Knowledge Bot！\n\n我是你的 CMS 操作助手，可以回答各類操作問題。\n\n🔍 你可以：\n• 點擊下方快速問題開始\n• 輸入自己的問題\n• 點擊「刷新知識庫」獲取最新內容\n\n✨ 已更新 Company tab 完整文檔！",
+  "version": "2.1",
+  "lastUpdated": "2026-07-10",
+  "welcomeMessage": "👋 歡迎使用 CMS Knowledge Bot！\n\n我是你的 CMS 操作助手，可以回答各類操作問題。\n\n🔍 你可以：\n• 點擊下方快速問題開始\n• 輸入自己的問題\n• 點擊「刷新知識庫」獲取最新內容\n\n✨ 已更新：新上架流程、Company Tab 完整文檔！",
   "quickQuestions": [
     {
       "id": 1,
-      "question": "如何創建公司？",
-      "category": "組織管理",
+      "question": "新上架流程是什麼？",
+      "category": "上架流程",
       "priority": "high"
     },
     {
@@ -17,90 +17,95 @@
     },
     {
       "id": 3,
+      "question": "品牌必填位有哪些？",
+      "category": "品牌管理",
+      "priority": "high"
+    },
+    {
+      "id": 4,
       "question": "如何創建店鋪？",
       "category": "組織管理",
       "priority": "high"
     },
     {
-      "id": 4,
-      "question": "品牌狀態有哪些？",
-      "category": "組織管理",
+      "id": 5,
+      "question": "店鋪必填位有哪些？",
+      "category": "店鋪管理",
       "priority": "high"
     },
     {
-      "id": 5,
-      "question": "如何設置特色項目？",
-      "category": "組織管理",
-      "priority": "medium"
-    },
-    {
       "id": 6,
-      "question": "店鋪如何設置地理位置？",
-      "category": "組織管理",
-      "priority": "medium"
+      "question": "Group必填位有哪些？",
+      "category": "組管理",
+      "priority": "high"
     },
     {
       "id": 7,
+      "question": "如何設置積分比例？",
+      "category": "積分管理",
+      "priority": "medium"
+    },
+    {
+      "id": 8,
+      "question": "Geo Location格式要求？",
+      "category": "店鋪管理",
+      "priority": "medium"
+    },
+    {
+      "id": 9,
       "question": "如何創建員工賬戶？",
       "category": "用戶管理",
       "priority": "high"
     },
     {
-      "id": 8,
+      "id": 10,
       "question": "如何推送優惠券？",
       "category": "營銷功能",
       "priority": "high"
     },
     {
-      "id": 9,
+      "id": 11,
       "question": "會員如何添加積分？",
       "category": "會員管理",
       "priority": "high"
     },
     {
-      "id": 10,
+      "id": 12,
       "question": "如何導出報表？",
       "category": "數據分析",
       "priority": "medium"
     },
     {
-      "id": 11,
+      "id": 13,
       "question": "忘記密碼怎麼辦？",
       "category": "賬戶管理",
       "priority": "medium"
     },
     {
-      "id": 12,
+      "id": 14,
       "question": "如何配置前端頁面？",
       "category": "系統配置",
       "priority": "medium"
     },
     {
-      "id": 13,
-      "question": "POS密鑰如何輪換？",
-      "category": "安全設置",
-      "priority": "low"
-    },
-    {
-      "id": 14,
-      "question": "如何修改會員信息？",
-      "category": "會員管理",
-      "priority": "high"
-    },
-    {
       "id": 15,
-      "question": "如何設置積分比例？",
-      "category": "品牌管理",
+      "question": "上架常見問題有哪些？",
+      "category": "上架流程",
       "priority": "medium"
     },
     {
       "id": 16,
-      "question": "店鋪狀態有什麼區別？",
-      "category": "店鋪管理",
+      "question": "如何檢查上架是否完成？",
+      "category": "上架流程",
       "priority": "medium"
     }
   ],
   "keywordMapping": {
+    "上架": ["上架", "launch", "新上架", "onboarding", "go live", "部署", "品牌上線"],
+    "上架流程": ["上架流程", "launch process", "onboarding process", "新品牌上架", "上架步驟"],
+    "必填位": ["必填位", "必填", "required fields", "mandatory fields", "必須填寫", "必須填"],
+    "檢查清單": ["檢查清單", "checklist", "檢查", "驗證", "確認", "檢查表"],
+
     "公司": ["公司", "company", "organization", "組織", "enterprise"],
     "創建公司": ["創建公司", "新建公司", "添加公司", "建立公司", "create company"],
     "公司狀態": ["公司狀態", "company status", "公司啟用", "公司停用"],
@@ -108,13 +113,15 @@
     "品牌": ["品牌", "brand", "牌子", "商標"],
     "創建品牌": ["創建品牌", "新建品牌", "添加品牌", "建立品牌", "create brand", "how to create brand"],
     "品牌狀態": ["品牌狀態", "brand status", "品牌啟用", "品牌停用", "品牌隱藏"],
-    "積分比例": ["積分比例", "point ratio", "積分兌換", "point exchange"],
-    "積分設置": ["積分設置", "point setting", "積分限制", "max earn"],
+    "積分比例": ["積分比例", "point ratio", "積分兌換", "point exchange", "point setting"],
+    "積分設置": ["積分設置", "point setting", "積分限制", "max earn", "積分限制設定"],
+    "品牌必填": ["品牌必填", "brand required", "品牌必填位", "brand mandatory", "品牌必須填"],
 
     "店鋪": ["店鋪", "shop", "store", "門店", "分店"],
     "創建店鋪": ["創建店鋪", "新建店鋪", "添加店鋪", "建立店鋪", "create shop", "how to create shop"],
     "店鋪狀態": ["店鋪狀態", "shop status", "店鋪啟用", "店鋪停用", "店鋪隱藏"],
-    "地理位置": ["地理位置", "geo", "坐標", "經緯度", "location", "address"],
+    "地理位置": ["地理位置", "geo", "坐標", "經緯度", "location", "address", "geo location"],
+    "店鋪必填": ["店鋪必填", "shop required", "店鋪必填位", "shop mandatory", "店鋪必須填"],
 
     "特色項目": ["特色項目", "featured item", "featured", "推薦項目", "首頁展示"],
     "創建特色項目": ["創建特色項目", "添加特色項目", "new featured item", "create featured item"],
@@ -122,7 +129,9 @@
     "時段設置": ["時段設置", "時間設置", "schedule", "datetime", "start time", "end time"],
 
     "公司組": ["公司組", "group", "組", "company group", "group brand"],
-    "創建組": ["創建組", "新建組", "添加組", "create group"],
+    "創建組": ["創建組", "新建組", "添加組", "create group", "how to create group"],
+    "組必填": ["組必填", "group required", "組必填位", "group mandatory", "組必須填"],
+    "group必填": ["group必填", "group required", "group mandatory"],
 
     "員工": ["員工", "職員", "工作", "人員", "staff"],
     "員工賬戶": ["員工", "職員", "賬戶", "員工管理", "staff account"],
@@ -146,6 +155,11 @@
 
     "編輯": ["編輯", "修改", "更新", "edit", "modify", "update"],
     "刪除": ["刪除", "移除", "delete", "remove"],
-    "保存": ["保存", "submit", "save", "提交"]
+    "保存": ["保存", "submit", "save", "提交"],
+
+    "測試": ["測試", "test", "驗證", "verify", "檢查", "功能測試"],
+    "驗證": ["驗證", "verify", "確認", "check", "test", "測試"],
+    "準備": ["準備", "preparation", "preparing", "ready", "前期準備"],
+    "完成": ["完成", "complete", "finish", "done", "完成檢查"]
   }
 }
