@@ -1,739 +1,327 @@
-# CMS 會員管理指南
+# CMS Membership 欄位及操作指南
 
-## 標簽
-#user-guide #membership #customer #intermediate
+## 標籤
 
-## 概述
+#user-guide #membership #customer-service #field-reference #confirmed
 
-本文檔介紹如何在 Storellet CMS 中管理會員賬戶，包括會員信息查看、編輯、積分管理、優惠券管理和歷史記錄查詢。
+## 文件用途
 
----
+本文件整理 Storellet CMS `Membership` 模組已確認的查詢條件、顯示欄位、可編輯欄位及操作按鈕，供 Account Servicing、Customer Service、營運人員及 Chatbot 使用。
 
-## 👥 訪問會員管理
+資料來源：`Storellet_CMS_UserGuide.pptx.pdf` Membership 章節 p.61–p.73，以及 `membership_confirmed_fields(1).xlsx`。
 
-### 步驟 1：進入會員管理頁面
-
-1. 登錄 CMS 系統
-2. 點擊頂部導航的**"會員"**或**"Membership"**
-3. 系統會跳轉到會員管理首頁
-   ```
-   URL: /cms/membership/index
-   ```
-
-### 步驟 2：選擇品牌和店鋪
-
-在會員管理頁面，需要先選擇：
-- **品牌 (Brand)**：選擇要管理的品牌
-- **店鋪 (Shop)**：選擇具體店鋪（可選）
+> 重要：本文件只將教學截圖及標註中清楚顯示的內容列為已確認資料。權限、審批、Audit Trail、CSV 格式及未有明確解釋的操作，不可由 Chatbot 自行推斷。
 
 ---
 
-## 🔍 查找會員
+## 狀態定義
 
-### 方法 1：通過會員 ID 查找
-
-1. 在會員管理頁面
-2. 輸入**會員 ID**
-3. 點擊"查找"或"搜索"
-4. 系統會顯示該會員的詳細信息
-
-### 方法 2：通過手機號查找
-
-1. 輸入完整的手機號（包含國家代碼）
-   - 例如：`+852-12345678` 或 `85212345678`
-2. 點擊"搜索"
-3. 系統會顯示匹配的會員列表
-
-**注意事項**：
-- ⚠️ 手機號必須包含國家代碼
-- ⚠️ 格式：`+[國家代碼][號碼]` 或 `[國家代碼][號碼]`
-- ✅ 支持的國家代碼包括：852（香港）、86（中國）、886（台灣）等
-
-### 方法 3：通過郵箱查找
-
-1. 輸入完整的郵箱地址
-2. 點擊"搜索"
-3. 系統會顯示匹配的會員
-
-### 方法 4：通過會員卡/二維碼查找
-
-1. 點擊**"二維碼掃描"**或**"QR Code Inspector"**
-2. 使用掃描設備掃描會員二維碼
-3. 系統會自動識別並顯示會員信息
-   ```
-   URL: /cms/membership/qrCodeInspector
-   ```
+| 狀態 | 意思 |
+|---|---|
+| 查詢條件 | 用於搜尋資料，不代表建立或編輯時必填 |
+| 顯示欄位 | 系統顯示資料，一般不用手動輸入 |
+| 顯示／可編輯 | 顯示現有資料，並可在指定介面修改 |
+| 必填／操作欄位 | 執行指定操作時必須填寫或選擇 |
+| 視乎需要 | 只在適用情況下填寫 |
+| 選填／可編輯 | 可以留空，亦可按需要修改 |
+| 操作按鈕 | 觸發功能的按鈕，不是資料欄位 |
 
 ---
 
-## 📝 查看會員詳情
+## 模組範圍
 
-### 會員信息頁面組成
-
-#### 1. 基本信息
-
-顯示會員的個人資料：
-- **會員 ID**：系統唯一標識
-- **顯示名稱**：會員顯示的名稱
-- **性別**：性別信息（男/女/未設置）
-- **生日**：生日日期
-- **郵箱**：注冊郵箱
-- **手機號**：注冊手機號
-- **國家/地區**：會員所在地區
-
-#### 2. 會員等級
-
-- **當前等級**：顯示當前會員等級
-- **積分**：當前可用積分
-- **加入日期**：會員注冊日期
-- **最後活躍**：最後活躍時間
-
-#### 3. 統計信息
-
-- **累計消費**：累計消費金額
-- **訂單數量**：歷史訂單總數
-- **優惠券**：可用/已使用/已過期
-- **印花卡**：進行中的印花卡
+- 3.1 Member：會員搜尋、會員資料、Discount Card、Coupon、Stamp、Bingo、History
+- 3.2 Verification Code：驗證碼搜尋及結果
+- 3.3 Invoice：Invoice 搜尋及結果（是否屬 Membership 正式範圍仍待確認）
 
 ---
 
-## ✏️ 編輯會員信息
+# 1. 3.1.1 List member’s details
 
-### 修改個人資料
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Member No. | 查詢條件 | Enter either one search parameter | 用會員編號搜尋會員資料 | 四選一輸入即可：Member No. / Phone No. / Email / Facebook ID | p.61 |
+| Phone No. | 查詢條件 | Enter either one search parameter | 用電話號碼搜尋會員資料 | 四選一輸入即可 | p.61 |
+| Email | 查詢條件 | Enter either one search parameter | 用 Email 搜尋會員資料 | 四選一輸入即可 | p.61 |
+| Facebook ID | 查詢條件 | Enter either one search parameter | 用 Facebook ID 搜尋會員資料 | 四選一輸入即可 | p.61 |
+| Search | 操作按鈕 | Click Search | 搜尋會員資料 | 不是資料欄位，屬操作按鈕 | p.61 |
 
-#### 步驟 1：打開編輯頁面
+# 2. 3.1.2 Edit member’s details
 
-1. 在會員詳情頁面
-2. 點擊**"編輯"**或**"Edit"**按鈕
-3. 系統會顯示編輯表單
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Member No. | 顯示欄位 | System display | 顯示 Storellet 會員編號及 security code | 一般不需手動修改 | p.62 |
+| Status | 可操作 / 顯示欄位 | Active / Inactive / Unsubscribe | 顯示會員目前狀態；可停用 membership 或 unsubscribe selected membership group | 涉及會員狀態，操作前需確認 | p.62-p.63 |
+| Alias no | 顯示欄位 | System display | 顯示會員 alias no. | 一般不需手動修改 | p.62 |
+| Security Code | 顯示欄位 | System display | 顯示安全碼 | 前台 QR / 會員識別有機會使用 | p.62 |
+| Phone No. | 顯示 / 可編輯 | Member phone number | 顯示及更新會員電話 | User Profile popup 可編輯 | p.62 |
+| Country Code | 顯示欄位 | System display | 顯示電話國家 / 地區碼 | 例：HK | p.62 |
+| Email | 顯示 / 可編輯 | Member email | 顯示及更新會員 Email | 支援 Send verification email / Toggle User Email Verify Status | p.62 |
+| Facebook ID | 顯示 / 可編輯 | Member Facebook ID | 顯示及更新會員 Facebook ID | 如會員無綁定可留空 | p.62 |
+| Display Name | 顯示 / 可編輯 | Member display name | 前台 / CMS 顯示會員名稱 | User Profile popup 可編輯 | p.62 |
+| First Name | 顯示欄位 | System / member profile | 顯示會員 First Name | 視乎會員資料是否有填 | p.62 |
+| Last Name | 顯示欄位 | System / member profile | 顯示會員 Last Name | 視乎會員資料是否有填 | p.62 |
+| Gender | 顯示 / 可編輯 | Male / Female / other available option | 顯示會員性別 | User Profile popup 可編輯 | p.62 |
+| Birthday | 顯示 / 可編輯 | YYYY/MM/DD or YYYYMMDD | 顯示會員生日 | User Profile popup 標示 Birthday (YYYYMMDD) | p.62 |
+| Join Date | 顯示欄位 | System display | 顯示會員加入日期 | 不建議手動修改 | p.62-p.63 |
+| Expiry Date | 顯示 / 可編輯 | Set expiry date if needed | 顯示 membership expiry date | 可按 Edit 修改；需跟會員條款一致 | p.63 |
+| Point(s) | 顯示 / 可操作 | System display / Point Adjustment | 顯示會員現有積分；可進入 point adjustment | 加減分操作需內部確認 | p.63 |
+| Delivery Coupon | 操作按鈕 | Click Delivery Coupon | 手動派發 coupon 給會員 | 打開 Delivery Coupon popup | p.63 |
+| Actual Accu. Sales Amount | 查詢 / 顯示欄位 | Select date range + Check | 根據 Brand ID / 日期區間顯示累積消費金額 | 可勾選 Use Net Amount When Calculating Accumulated Sales | p.63 |
+| Receive News - Global | 顯示 / 操作欄位 | Checkbox | 顯示會員是否同意接收該 group 推廣訊息 | 當會員不同意推廣，對應 box 會被 ticked / 更新狀態需小心 | p.63-p.64 |
+| Receive News - by Email | 顯示 / 操作欄位 | Checkbox | Email 推廣同意狀態 | 屬會員推廣同意紀錄 | p.64 |
+| Receive News - by App Push | 顯示 / 操作欄位 | Checkbox | App Push 推廣同意狀態 | 屬會員推廣同意紀錄 | p.64 |
+| Receive News - by Sms | 顯示 / 操作欄位 | Checkbox | SMS 推廣同意狀態 | 屬會員推廣同意紀錄 | p.64 |
+| Receive News - by Communication Platform | 顯示 / 操作欄位 | Checkbox | Communication Platform 推廣同意狀態 | 屬會員推廣同意紀錄 | p.64 |
+| Receive News - by Website | 顯示 / 操作欄位 | Checkbox | Website 推廣同意狀態 | 屬會員推廣同意紀錄 | p.64 |
+| Membership Group | 操作欄位 | Select company group | 選擇會員加入的 company group | PPT 標示 select the company group of the membership | p.62 |
+| Brands | 操作欄位 | Select brand | 顯示 / 篩選會員 brand profile | User Brand Profile will be shown if exists | p.62 |
 
-#### 步驟 2：修改信息
+# 3. 3.1.2 Delivery Coupon popup
 
-可以修改的信息包括：
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Brand | 必填 / 操作欄位 | Select brand | 選擇派 coupon 所屬品牌 | 派發 coupon 前需選正確 brand | p.63 |
+| Coupon | 必填 / 操作欄位 | Select coupon | 選擇要派發的 coupon | 需先有 coupon config | p.63 |
+| Available Shop | 視乎需要 | Select available shop if applicable | 限制 coupon 可用分店 | 無分店限制可按 coupon config | p.63 |
+| Expiry Date | 必填 / 操作欄位 | Select date | 設定手動派發 coupon 到期日 | 需同 campaign / coupon validity 一致 | p.63 |
+| Remark | 選填 | Max 250 characters | 派發備註 | PPT 顯示字數限制 250 | p.63 |
 
-**基本信息**：
-- ✅ **顯示名稱**：會員顯示的名稱
-- ✅ **姓名**：名和姓
-- ✅ **性別**：選擇性別
-- ✅ **生日**：選擇生日日期
+# 4. 3.1.2 User Profile popup
 
-**聯系方式**：
-- ✅ **郵箱**：更改郵箱地址
-  - ⚠️ 新郵箱不能與其他會員重復
-  - ⚠️ 格式必須有效（如 user@example.com）
-- ✅ **手機號**：更改手機號碼
-  - ⚠️ 必須包含國家代碼
-  - ⚠️ 新號碼不能與其他會員重復
-- ✅ **其他手機號**：添加備用手機號（可多個）
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Alternative Phone No. | 選填 / 可編輯 | Optional phone number | 會員替代電話 | 如無資料可留空 | p.62 |
+| Instagram | 選填 / 可編輯 | Instagram account / link | 會員 social profile | 如無資料可留空 | p.62 |
+| facebook | 選填 / 可編輯 | Facebook account / link | 會員 social profile | 如無資料可留空 | p.62 |
+| littleredbook | 選填 / 可編輯 | Little Red Book account / link | 會員 social profile | 如無資料可留空 | p.62 |
+| openricehk | 選填 / 可編輯 | OpenRice account / link | 會員 social profile | 如無資料可留空 | p.62 |
 
-**社交媒體**：
-- ✅ **Facebook ID**：關聯 Facebook 賬戶
-- ✅ **其他社交媒體**：根據品牌設置添加
+# 5. 3.1.3 Discount card
 
-#### 步驟 3：保存更改
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Brand | 顯示欄位 | System display | 顯示 discount card 所屬 brand | 會員所有 discount cards 會被列出 | p.65 |
+| Membership Level | 顯示欄位 | System display | 顯示會員 membership level；前台亦會顯示 | 例如 Paid TIER 3 MEMBER | p.65 |
+| Discount Rate | 顯示欄位 | System display | 顯示該 card 提供折扣率 | 例如 10 代表 10% off | p.65 |
+| Expiry Date | 顯示 / 可編輯 | Edit expiry date if needed | 顯示 discount card 有效期 | 可按 Edit 修改 expiry date | p.65 |
+| Start Date | 顯示欄位 | System display | 顯示 discount card 開始日期 | 前台有效期依此顯示 | p.65 |
+| Status | 顯示欄位 | active / expired | 顯示 discount card 當前狀態 | 狀態會是 active / expired | p.65 |
+| Remark | 顯示欄位 | System display | 顯示 discount card 備註 | 如無備註可為空 | p.65 |
+| Detail | 操作按鈕 | Click Detail | 查看 / 修改 discount card 詳細設定 | 會切換到 Assets > Discount Card section | p.65 |
+| Expire | 操作按鈕 | Click Expire | 手動令 discount card 過期 | 操作前需確認 | p.65 |
+| Edit | 操作按鈕 | Click Edit | 修改 discount card expiry date | 會影響會員前台卡有效期 | p.65 |
 
-1. 點擊**"保存"**或**"Save"**按鈕
-2. 系統會驗證所有輸入
-3. 保存成功後會顯示確認消息
-   ```
-   URL: /cms/membership/updateProfile
-   ```
+# 6. 3.1.4 Coupon Summary
 
-#### 注意事項
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Brand | 顯示欄位 | System display | 顯示 coupon 所屬 brand | 會員所有 coupon summary 會列出 | p.66 |
+| Coupon ID | 顯示欄位 | System display | 顯示 coupon ID | 用作 coupon config reference | p.66 |
+| Coupon | 顯示欄位 | System display | 顯示 coupon name | 會員 wallet coupon summary | p.66 |
+| Active Count | 顯示欄位 | System display | 顯示 active coupon 數量 | PPT 指出 current status quantity 會顯示 | p.66 |
+| Used Count | 顯示欄位 | System display | 顯示已使用 coupon 數量 | 會員 coupon 狀態統計 | p.66 |
+| Expired Count | 顯示欄位 | System display | 顯示已過期 coupon 數量 | 會員 coupon 狀態統計 | p.66 |
+| Status | 顯示欄位 | active / expired | 顯示 coupon config 狀態 | 狀態會是 active / expired | p.66 |
+| Detail | 操作按鈕 | Click Detail | 查看 coupon card details | 會切換到 Assets > Coupon section | p.66 |
 
-**郵箱驗證**：
-- ⚠️ 修改郵箱後，系統可能會要求重新驗證郵箱
-- ⚠️ 會員需要點擊驗證鏈接完成驗證
+# 7. 3.1.5 Coupon card
 
-**手機號格式**：
-- ⚠️ 必須包含有效的國家代碼
-- ⚠️ 例如：`+852-12345678`、`86-13812345678`
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Brand | 顯示欄位 | System display | 顯示 coupon card 所屬 brand | 會員所有 coupon cards 會列出 | p.67 |
+| Coupon | 顯示欄位 | System display | 顯示 coupon name / coupon ID | 會顯示於前台 coupon card | p.67 |
+| Start Date | 顯示欄位 | System display | 顯示 coupon card 開始有效日期 | 前台顯示優惠券有效日期 | p.67 |
+| Expiry Date | 顯示欄位 | System display | 顯示 coupon card 到期日 | 前台顯示優惠券有效日期 | p.67 |
+| Extended Expiry Date | 顯示欄位 | System display | 顯示延長後到期日 | 如未延長會顯示 / | p.67 |
+| Serial No. | 顯示欄位 | System display | 顯示 coupon 識別號碼 | PPT 指出為 coupon identification number | p.67 |
+| Status | 顯示欄位 | active / used / expired | 顯示 coupon card 當前狀態 | PPT 指出 active / expired；畫面亦有 used | p.67 |
+| Remark | 顯示欄位 | System display | 顯示 coupon card 備註 | 如無備註可為 --- | p.67 |
+| Detail | 操作按鈕 | Click Detail | 查看 / 修改 coupon card detail | 會切換到 Assets > Coupon section | p.67 |
+| Expire | 操作按鈕 | Click Expire | 手動令 coupon card 過期 | 操作前需確認 | p.67 |
+| Use | 操作按鈕 | Click Use | 手動標記 coupon 使用 | 操作前需確認，會影響會員 wallet | p.67 |
 
-**重復檢查**：
-- ⚠️ 郵箱和手機號不能與現有會員重復
-- ⚠️ 如果重復，系統會顯示錯誤信息
+# 8. 3.1.6 Stamp
 
----
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Brand | 顯示欄位 | System display | 顯示 stamp 所屬 brand | 會員所有 stamps 會列出 | p.68 |
+| Create Date | 顯示欄位 | System display | 顯示 stamp record 建立日期 | 用於追蹤印花取得時間 | p.68 |
+| Name | 顯示欄位 | System display | 顯示 stamp campaign / stamp name | 例如 Stamp Card | p.68 |
+| Type | 顯示欄位 | normal / special | 顯示印花類型 | PPT 指出 type will be either normal or special | p.68 |
+| Status | 顯示欄位 | Active / Expired | 顯示 stamp record 狀態 | PPT 指出 active / expired | p.68 |
+| Invoice | 顯示欄位 | System display | 顯示相關 invoice details | 包括 invoice no., shop code, net amount, order type, payment method | p.68 |
+| Show Summary | 操作按鈕 | Click Show Summary | 查看 stamp summary | 不是資料欄位 | p.68 |
+| Add Stamp | 操作按鈕 | Click Add Stamp | 手動新增 stamp | 操作前需確認活動及會員資格 | p.68 |
+| Void | 操作按鈕 | Click Void | 取消 / 作廢 stamp record | 操作前需確認 | p.68 |
 
-## 💰 積分管理
+# 9. 3.1.7 Stamp Card
 
-### 查看積分詳情
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Brand | 顯示欄位 | System display | 顯示 stamp card 所屬 brand | 會員所有 stamp cards 會列出 | p.69 |
+| Create Date | 顯示欄位 | System display | 顯示 stamp card record 建立日期 | 用作追蹤兌換紀錄 | p.69 |
+| No. of Stamp used | 顯示欄位 | System display | 顯示會員兌換 coupon 所使用的 stamp 數量 | PPT 第 ① 點 | p.69 |
+| Redeemed Coupon | 顯示欄位 | System display | 顯示會員已兌換 coupon 類型 | PPT 第 ② 點 | p.69 |
 
-#### 訪問積分頁面
+# 10. 3.1.8 Bingo
 
-在會員詳情頁面：
-1. 找到**"積分"**或**"Points"**部分
-2. 可以查看：
-   - **當前積分**：可用積分余額
-   - **過期積分**：即將過期的積分
-   - **積分歷史**：積分變動記錄
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Brand | 顯示欄位 | System display | 顯示 Bingo 所屬 brand | 會員所有 Bingo 會列出 | p.70 |
+| Name | 顯示欄位 | System display | 顯示 Bingo name | 如無資料會顯示 No data available | p.70 |
+| Start Date | 顯示欄位 | System display | 顯示 Bingo start date | Bingo validity reference | p.70 |
+| Expiry Date | 顯示欄位 | System display | 顯示 Bingo expiry date | Bingo validity reference | p.70 |
+| Serial No. | 顯示欄位 | System display | 顯示 Bingo identification number | PPT 第 ② 點 | p.70 |
+| Status | 顯示欄位 | active / expired | 顯示 Bingo 當前狀態 | PPT 第 ③ 點 | p.70 |
 
-### 添加積分
+# 11. 3.1.9 History
 
-#### 方法 1：手動添加積分
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Brand | 顯示欄位 | System display | 顯示 record 所屬 brand | 會員詳細紀錄 summary table | p.71 |
+| Create Date | 顯示欄位 | System display | 顯示 record 建立日期及時間 | PPT 第 ① 點 | p.71 |
+| Transaction Time | 顯示欄位 | System display if transaction type | 顯示交易紀錄時間 | 只有 transaction type record 會有資料 | p.71 |
+| Point Change | 顯示欄位 | System display | 顯示會員積分變動 | 例如 +8 / +200 / -20 | p.71 |
+| Type | 顯示欄位 | coupon / coupon collect / coupon purchase / discount card / transaction / adjustment | 顯示 record 類型 | PPT 列明可見 record types | p.71 |
+| Shop | 顯示欄位 | System display | 顯示相關 shop no. | 如無相關 shop 會顯示 --- | p.71 |
+| Description | 顯示欄位 | System display | 顯示 record details | 例如 coupon details、payment reference、membership details、invoice details 等 | p.71 |
 
-1. 點擊**"添加積分"**或**"Add Points"**
-2. 輸入信息：
-   - **積分數量**：正數表示添加
-   - **原因**：添加原因（如活動獎勵、補償等）
-   - **過期日期**：積分過期時間（可選）
-3. 點擊**"確認"**
-   ```
-   URL: /cms/membership/addGroupPoint
-   ```
+# 12. 3.2.1 Search verification code
 
-#### 方法 2：通過交易添加積分
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Phone No. | 查詢條件 | Enter phone no. | 搜尋該電話號碼對應 verification code | 會員註冊時驗證碼會發送到 mobile device | p.72 |
+| Email | 查詢條件 | Enter email | 用 Email 搜尋 verification code | 視乎系統有否以 Email 查詢 | p.72 |
+| Verification Code | 顯示欄位 | System display | 顯示對應電話 / Email 的 verification code | Result table 欄位 | p.72 |
+| Expiry Date | 顯示欄位 | System display | 顯示 verification code 到期日 | Result table 欄位 | p.72 |
+| Status | 顯示欄位 | System display | 顯示 verification code 狀態 | Result table 欄位 | p.72 |
 
-1. 點擊**"交易轉積分"**或**"Transaction to Points"**
-2. 輸入交易 ID（Transaction ID）
-3. 選擇會員 ID
-4. 系統會顯示：
-   - 交易金額
-   - 應得積分
-   - 今日已添加積分次數
-   - 本周已添加積分次數
-5. 確認後添加積分
-   ```
-   URL: /cms/membership/transaction2Member
-   ```
+# 13. 3.3.1 Search Invoice
 
-**注意事項**：
-- ⚠️ 交易不能是已撤銷的
-- ⚠️ 交易不能已經添加過積分
-- ⚠️ 需要檢查每日/每周積分添加限制
-
-### 修改積分過期日期
-
-1. 在積分詳情頁面
-2. 找到**"過期日期"**
-3. 點擊**"編輯"**
-4. 選擇新的過期日期
-5. 點擊**"保存"**
-   ```
-   URL: /cms/membership/updateUserPointExpiryDate
-   ```
-
-**用途**：
-- 延長會員積分有效期
-- 作為特殊獎勵延長積分
-
----
-
-## 🎫 優惠券管理
-
-### 查看會員優惠券
-
-#### 訪問優惠券頁面
-
-在會員詳情頁面：
-1. 找到**"優惠券"**或**"Coupons"**部分
-2. 可以查看：
-   - **可用優惠券**：未使用且未過期
-   - **已使用優惠券**：已經使用過的
-   - **已過期優惠券**：已過期的
-   ```
-   URL: /cms/membership/{userId}/group/{groupId}/coupons
-   ```
-
-### 添加優惠券
-
-#### 步驟 1：選擇優惠券
-
-1. 點擊**"添加優惠券"**或**"Add Coupon"**
-2. 系統會顯示可用的優惠券列表
-   ```
-   URL: /cms/membership/availableCoupons
-   ```
-3. 選擇要添加的優惠券類型
-
-#### 步驟 2：配置優惠券
-
-輸入以下信息：
-- **優惠券類型**：選擇優惠券
-- **數量**：發放數量
-- **過期日期**：設置過期時間
-- **備注**：添加原因（可選）
-
-#### 步驟 3：確認發放
-
-1. 點擊**"發放"**
-2. 系統會確認發放
-   ```
-   URL: /cms/membership/addFavour
-   ```
-3. 會員會收到通知（根據品牌設置）
-
-### 使用優惠券（手動）
-
-**場景**：會員無法自動使用優惠券時，客服可以手動操作
-
-1. 輸入優惠券序列號（Serial）
-2. 點擊**"使用"**
-3. 系統會驗證：
-   - 優惠券是否屬於該會員
-   - 優惠券是否在有效期內
-   - 優惠券是否已使用
-4. 確認使用
-   ```
-   URL: /cms/membership/useUserFavour/{serial}
-   ```
-
-### 作廢優惠券
-
-1. 找到要作廢的優惠券
-2. 點擊**"作廢"**或**"Expire"**
-3. 輸入作廢原因
-4. 確認作廢
-   ```
-   URL: /cms/membership/expireUserFavour/{serial}
-   ```
-
-**用途**：
-- 優惠券出現錯誤需要作廢
-- 防止錯誤使用
-
-### 修改優惠券過期日期
-
-1. 在優惠券列表中
-2. 點擊**"編輯過期日期"**
-3. 選擇新的過期日期
-4. 點擊**"保存"**
-   ```
-   URL: /cms/membership/updateFavourExpiryDate
-   ```
+| Field / UI Item | Status | Suggested / Default | Purpose / Front-end Impact | Notes | Source |
+|---|---|---|---|---|---|
+| Complete Invoice No. | 查詢條件 / 顯示欄位 | Enter complete invoice no. if available | 搜尋 / 顯示完整 invoice no. | Invoice section 出現於 Membership menu | p.73 |
+| Brand | 查詢條件 / 顯示欄位 | Select brand | 按 brand 搜尋 invoice / 顯示 invoice brand | 例：Storellet cafe | p.73 |
+| Shop | 查詢條件 / 顯示欄位 | Enter / select shop | 按 shop 搜尋 invoice / 顯示 invoice shop | 例：(STRIPE) | p.73 |
+| Transaction Date | 查詢條件 | Select date range | 按交易日期搜尋 invoice | 需輸入 start date / end date | p.73 |
+| Purchase Time | 顯示欄位 | System display | 顯示購買時間 | Invoice result table 欄位 | p.73 |
+| Info | 顯示欄位 | System display | 顯示 invoice details | 包含 Status、Invoice Amount、Net Amount、Order Type、Payment Method、Items、Discount、Coupons、Member No.、Used Promo Code | p.73 |
+| Redeem | 顯示欄位 | System display | 顯示 redeem 時間 / 狀態 | Invoice result table 欄位 | p.73 |
 
 ---
 
-## 🎯 印花卡管理
+# 14. 重要操作說明
 
-### 查看印花卡
+## 搜尋會員
 
-#### 訪問印花卡頁面
+在「List member’s details」可用以下其中一項搜尋會員：
 
-在會員詳情頁面：
-1. 找到**"印花卡"**或**"Stamp Cards"**部分
-2. 可以查看：
-   - **進行中的活動**：未完成的印花卡
-   - **已完成的**：已完成的印花卡
-   - **進度**：每個活動的收集進度
-   ```
-   URL: /cms/membership/{userId}/group/{groupId}/stampcards
-   ```
+- Member No.
+- Phone No.
+- Email
+- Facebook ID
 
-### 添加印花
+四項選一輸入即可，然後按 Search。Chatbot 不應聲稱必須同時填寫多項，亦不可自行加入「部分匹配」、「QR Code 搜尋」或特定電話格式要求。
 
-#### 手動添加印花
+## 手動派發 Coupon
 
-1. 點擊**"添加印花"**或**"Add Stamp"**
-2. 選擇印花卡活動
-3. 點擊**"確認"**
-4. 系統會為會員添加一個印花
-   ```
-   URL: /cms/membership/{userId}/addUserStamp
-   ```
+Delivery Coupon Popup 已確認欄位：
 
-**注意事項**：
-- ⚠️ 需要檢查印花卡是否已滿
-- ⚠️ 需要檢查活動是否在有效期內
+- Brand：必填
+- Coupon：必填
+- Available Shop：視乎需要
+- Expiry Date：必填
+- Remark：選填，最多 250 characters
 
-### 作廢印花
+操作前需確認正確 Brand、Coupon、有效期及適用分店。是否符合手動派發規則、操作權限及審批流程仍待確認。
 
-**場景**：錯誤添加了印花需要撤銷
+## Receive News
 
-1. 找到要作廢的印花記錄
-2. 點擊**"作廢"**或**"Void Stamp"**
-3. 輸入作廢原因
-4. 確認作廢
-   ```
-   URL: /cms/membership/voidUserStamp/{userStampId}
-   ```
+頁面顯示以下推廣同意狀態：Global、Email、App Push、SMS、Communication Platform 及 Website。教學資料指出會員不同意推廣時，相應 Checkbox 可能會被 Tick；目前 CMS 的 Tick／Untick 準確含義仍待確認，因此 Chatbot 不可直接以「Tick = 同意」回答。
 
-### 修改印花數量
+## 會員資產及高風險操作
 
-**批量操作**：一次修改多個印花
+以下按鈕會改變會員資料或資產狀態，操作前必須核對目標會員及相關活動：
 
-1. 點擊**"批量編輯"**
-2. 選擇印花卡活動
-3. 輸入新的印花數量
-4. 點擊**"保存"**
-   ```
-   URL: /cms/membership/stampsUpdateOld
-   ```
+- Status：Deactivate／Unsubscribe Membership
+- Point(s)：Point Adjustment
+- Discount Card：Expire／Edit
+- Coupon Card：Expire／Use
+- Stamp：Add Stamp／Void
+
+現有資料只確認按鈕及大概用途，未確認操作權限、審批要求及 Audit Trail。
 
 ---
 
-## 🎮 Bingo 活動管理
+# 15. 待進一步確認項目
 
-### 查看 Bingo 活動
+以下內容不可由 Chatbot 自行推斷：
 
-在會員詳情頁面：
-1. 找到**"Bingo"**或**"Bingo 活動"**部分
-2. 可以查看會員參與的 Bingo 活動
-3. 顯示進度和完成情況
-   ```
-   URL: /cms/membership/{userId}/group/{groupId}/bingos
-   ```
-
-### 修改 Bingo 進度
-
-1. 點擊**"編輯 Bingo"**
-2. 選擇 Bingo 活動
-3. 修改完成狀態
-4. 點擊**"保存"**
-   ```
-   URL: /cms/membership/bingosUpdate
-   ```
+| Section | Field / Area | Reason | Source |
+|---|---|---|---|
+| 3.1.2 Edit member’s details | Deactivate / Unsubscribe membership | 會直接影響會員狀態及推廣訂閱；應由 account / CS 確認權限與流程 | p.63 |
+| 3.1.2 Edit member’s details | Point Adjustment | 涉及會員積分加減，需確認內部審批及原因記錄要求 | p.63 |
+| 3.1.2 Delivery Coupon | Manual coupon delivery rule | 手動派 coupon 需要確認 coupon 是否可派、有效期、available shop 及 remark 標準 | p.63 |
+| 3.1.2 Receive News checkboxes | Checkbox interpretation | PPT 指出 member disagreed with promotion 時對應 box 會 ticked；需確認目前 CMS 實際 tick/untick 邏輯 | p.64 |
+| 3.1.5 Coupon card | Manual Use / Expire | 會直接改變會員優惠券狀態，需確認操作權限及 audit trail | p.67 |
+| 3.1.6 Stamp | Add Stamp / Void | 會影響會員 stamp wallet，需確認手動補印 / void 的內部流程 | p.68 |
+| 3.1.8 Bingo | Bingo field meaning | PPT 第 ① 點標示 ???，未確認該欄位用途 | p.70 |
+| 3.3 Invoice | Invoice module scope | Overview p.4 未列 Invoice，但 p.73 出現 3.3 Invoice；需確認是否納入 Membership checklist 正式範圍 | p.4 / p.73 |
 
 ---
 
-## 📜 查看歷史記錄
+# 16. Chatbot 回答規則
 
-### 會員活動歷史
-
-#### 訪問歷史頁面
-
-1. 在會員詳情頁面
-2. 點擊**"歷史記錄"**或**"History"**
-3. 系統會顯示所有活動記錄
-   ```
-   URL: /cms/membership/{userId}/group/{groupId}/history
-   ```
-
-#### 歷史記錄類型
-
-顯示的活動類型包括：
-
-| 類型 | 說明 |
-|------|------|
-| **積分變動** | 獲得積分、使用積分、積分過期 |
-| **印花收集** | 獲得印花、完成印花卡 |
-| **優惠券** | 獲得優惠券、使用優惠券、優惠券過期 |
-| **等級變動** | 等級提升、等級降低 |
-| **資料更新** | 修改個人資料、聯系方式 |
-| **交易記錄** | 消費交易、退款 |
-
-#### 篩選歷史記錄
-
-**按時間篩選**：
-- 今天
-- 本周
-- 本月
-- 自定義日期范圍
-
-**按類型篩選**：
-- 只看積分記錄
-- 只看優惠券記錄
-- 只看印花記錄
-
-**導出歷史**：
-- 點擊**"導出"**
-- 選擇格式（Excel/CSV）
-- 下載歷史記錄
-
-### 查看歷史總數
-
-1. 在歷史頁面
-2. 點擊**"統計"**或**"Summary"**
-3. 系統會顯示：
-   - 總積分變動
-   - 總獲得印花數
-   - 總使用優惠券數
-   - 總消費金額
-   ```
-   URL: /cms/membership/{userId}/group/{groupId}/getHistoryTotal
-   ```
+1. 回答時要指出 Sub-section、Field／UI Item、Status 及用途。
+2. 不可將「查詢條件」誤稱為建立會員時的必填欄位。
+3. 不可將「顯示欄位」誤稱為可編輯欄位。
+4. 「視乎需要」必須連同適用情況回答。
+5. 涉及 Deactivate、Unsubscribe、Point Adjustment、Delivery Coupon、Expire、Use、Add Stamp 或 Void，必須提示屬高風險操作及需確認內部流程。
+6. 不可自行加入 Excel 未確認的 URL、欄位限制、權限、審批、Audit Log、Export、QR Code、密碼管理、虛擬會員或封禁手機流程。
+7. Receive News Checkbox 的 Tick／Untick 意思未完全確認，需向 Account／CS／Tech Team 核實。
+8. Bingo p.70 第 ① 點欄位用途未確認，不可推斷。
+9. Invoice 雖出現於 p.73，但是否正式屬 Membership Checklist 範圍仍待確認。
+10. 如資料未在本文件確認，應回答：「現有已確認 Membership 教學未有清楚定義，需向相關 Team 確認。」
 
 ---
 
-## 📱 驗證管理
+# 17. 常見問題
 
-### 郵箱驗證
+## Q1：搜尋會員需要填寫全部搜尋欄位嗎？
 
-#### 查看驗證狀態
+不需要。Member No.、Phone No.、Email 或 Facebook ID 四選一即可，再按 Search。
 
-在會員詳情中：
-- **郵箱**旁邊會顯示驗證狀態
-- ✅ 已驗證：郵箱已通過驗證
-- ❌ 未驗證：郵箱未驗證
+## Q2：CMS 可以修改哪些會員基本資料？
 
-#### 發送驗證郵件
+已確認可在相關介面編輯或操作的資料包括 Phone No.、Email、Facebook ID、Display Name、Gender、Birthday、Expiry Date，以及 User Profile Popup 內的 Alternative Phone No. 和部分 Social Profile。First Name、Last Name、Country Code、Join Date 等在現有教學中只確認為顯示欄位。
 
-1. 找到**郵箱驗證**部分
-2. 點擊**"發送驗證郵件"**
-3. 系統會發送驗證鏈接到會員郵箱
-   ```
-   URL: /cms/membership/sendVerificationEmail
-   ```
+## Q3：如何手動派 Coupon？
 
-#### 手動設置驗證狀態
+在會員詳情按 Delivery Coupon，選擇 Brand、Coupon 及 Expiry Date；Available Shop 視乎需要，Remark 可選填並最多 250 characters。實際派發前需確認內部授權及 Coupon 規則。
 
-**特殊場景**：管理員可以手動設置驗證狀態
+## Q4：Coupon Summary 與 Coupon Card 有甚麼分別？
 
-1. 點擊**"切換驗證狀態"**
-2. 系統會切換驗證狀態（已驗證 ↔ 未驗證）
-3. 確認操作
-   ```
-   URL: /cms/membership/toggleUserEmailVerifyStatus
-   ```
+Coupon Summary 顯示各 Coupon 的 Active、Used、Expired 數量及 Coupon Config 狀態；Coupon Card 則列出會員每張 Coupon 的 Start Date、Expiry Date、Serial No.、Status 及相關操作。
 
-**注意事項**：
-- ⚠️ 僅在特殊情況下使用（如系統錯誤）
-- ⚠️ 操作會記錄在日志中
+## Q5：Coupon Card 有哪些已確認狀態？
 
----
+已確認可見 Active、Used 及 Expired。手動 Use 或 Expire 會直接影響會員 Wallet，操作權限及 Audit Trail 仍待確認。
 
-## 🔐 密碼管理
+## Q6：如何查看會員的積分變動？
 
-### 修改會員密碼
+在 History 可查看 Point Change，例如 +8、+200 或 -20；同時可查看 Type、Create Date、Transaction Time、Shop 及 Description。
 
-#### 步驟 1：打開密碼修改頁面
+## Q7：Verification Code 可以用甚麼搜尋？
 
-1. 在會員詳情頁面
-2. 找到**"密碼管理"**或**"Password"**
-3. 點擊**"修改密碼"**
-   ```
-   URL: /cms/membership/changePassword
-   ```
+已確認可使用 Phone No. 或 Email 搜尋；結果會顯示 Verification Code、Expiry Date 及 Status。
 
-#### 步驟 2：輸入新密碼
+## Q8：Receive News Checkbox Tick 代表同意嗎？
 
-- **新密碼**：輸入新密碼（至少 6 位）
-- **確認密碼**：再次輸入新密碼
-
-#### 步驟 3：保存密碼
-
-1. 點擊**"保存"**
-2. 系統會更新密碼
-3. 建議通知會員密碼已更改
-
-### 發送忘記密碼短信
-
-**場景**：會員忘記密碼，請求幫助
-
-1. 點擊**"發送密碼重置短信"**
-2. 系統會發送重置鏈接到會員手機
-   ```
-   URL: /cms/membership/sendForgetPasswordSms
-   ```
-
-### 發送忘記密碼郵件
-
-1. 點擊**"發送密碼重置郵件"**
-2. 系統會發送重置鏈接到會員郵箱
-   ```
-   URL: /cms/membership/sendForgetPasswordEmail
-   ```
+暫時不可直接作此結論。教學資料指出會員不同意推廣時相應 Checkbox 可能會被 Tick，準確邏輯需按目前 CMS 實際行為確認。
 
 ---
 
-## 📊 累計銷售金額
-
-### 查看累計消費
-
-1. 在會員詳情頁面
-2. 找到**"累計消費"**或**"Accumulated Sales"**
-3. 系統會顯示：
-   - 累計消費總金額
-   - 消費次數
-   - 平均消費金額
-   ```
-   URL: /cms/membership/{userId}/getAccuSalesAmount
-   ```
-
----
-
-## 🔄 跨組管理
-
-### 添加會員到其他組
-
-**場景**：會員需要在多個品牌組中使用
-
-1. 點擊**"添加到組"**或**"Add to Group"**
-2. 選擇要添加的組
-3. 確認添加
-   ```
-   URL: /cms/membership/{userId}/addGroup/{groupId}
-   ```
-
-### 刪除會員的組
-
-1. 選擇要刪除的組
-2. 點擊**"刪除組"**
-3. 確認刪除
-   ```
-   URL: /cms/membership/{userId}/deleteGroup/{groupId}
-   ```
-
-**注意事項**：
-- ⚠️ 刪除組會刪除該組下的所有數據（積分、優惠券、印花）
-- ⚠️ 操作不可逆
-
-### 查看其他組的會員信息
-
-1. 點擊**"其他組"**或**"Other Groups"**
-2. 選擇要查看的組
-3. 系統會顯示會員在該組的信息
-   ```
-   URL: /cms/membership/{userId}/otherGroup
-   ```
-
----
-
-## 👤 虛擬會員
-
-### 創建虛擬會員
-
-**場景**：用於測試或特殊用途的虛擬賬戶
-
-1. 點擊**"創建虛擬會員"**
-2. 選擇品牌
-3. 系統會自動創建虛擬會員
-4. 虛擬會員有特殊標識
-   ```
-   URL: /cms/membership/createVirtualUser/{brandId}
-   ```
-
-**虛擬會員特點**：
-- 用於測試和演示
-- 不發送實際通知
-- 可以轉換為真實會員
-
-### 查看虛擬會員
-
-1. 點擊**"獲取虛擬會員"**
-2. 系統會顯示虛擬會員列表
-   ```
-   URL: /cms/membership/getVirtualUser
-   ```
-
----
-
-## 🚫 封禁管理
-
-### 封禁手機號
-
-**場景**：防止惡意手機號注冊
-
-1. 輸入要封禁的手機號
-2. 點擊**"封禁"**
-3. 系統會阻止該手機號注冊
-   ```
-   URL: /cms/membership/blockPhone
-   ```
-
-### 解封手機號
-
-1. 在封禁列表中
-2. 找到要解封的手機號
-3. 點擊**"解封"**
-   ```
-   URL: /cms/membership/blockPhone/delete/{phone}
-   ```
-
----
-
-## 🔧 常見問題
-
-### Q: 會員信息修改後不生效？
-
-**A**：
-1. 清除瀏覽器緩存並刷新頁面
-2. 確認修改已保存（檢查成功消息）
-3. 如果修改聯系方式，會員可能需要重新登錄
-
-### Q: 添加積分失敗？
-
-**A**：
-1. 檢查會員是否屬於正確的組
-2. 確認積分數量是否正確（正數）
-3. 檢查是否超出每日/每周限制
-4. 確認交易 ID 有效（如果是通過交易添加）
-
-### Q: 無法找到會員？
-
-**A**：
-1. 確認搜索格式正確
-2. 嘗試使用會員 ID 而不是手機號
-3. 手機號必須包含國家代碼
-4. 嘗試部分匹配搜索
-
-### Q: 優惠券發放失敗？
-
-**A**：
-1. 檢查優惠券是否在有效期內
-2. 確認優惠券庫存是否充足
-3. 檢查會員是否已經擁有該優惠券（部分優惠券限領一張）
-4. 確認會員是否符合優惠券條件
-
-### Q: 印花卡滿了還能添加嗎？
-
-**A**：
-- 如果印花卡已滿，無法繼續添加印花
-- 會員需要先兌換獎勵
-- 或者創建新的印花卡活動
-
-### Q: 如何查看會員的所有歷史？
-
-**A**：
-1. 在會員詳情頁面點擊"歷史記錄"
-2. 可以按類型篩選（積分/優惠券/印花）
-3. 可以按時間范圍篩選
-4. 可以導出歷史記錄到 Excel
-
-### Q: 會員可以在多個品牌中使用嗎？
-
-**A**：
-- 一個會員可以屬於多個組（品牌）
-- 每個組的積分、優惠券、印花是獨立的
-- 可以通過"添加到組"功能添加到其他品牌
-
----
-
-## 🎯 最佳實踐
-
-### 日常操作
-
-#### 查找會員
-- ✅ 優先使用手機號或會員 ID 查找
-- ✅ 確保手機號包含國家代碼
-- ✅ 使用二維碼掃描提高效率
-
-#### 編輯信息
-- ✅ 修改前確認會員身份
-- ✅ 重要修改（如手機號）建議二次確認
-- ✅ 記錄修改原因
-
-#### 添加積分
-- ✅ 明確添加原因（如活動獎勵、補償）
-- ✅ 檢查每日/每周限制
-- ✅ 設置合理的過期日期
-
-#### 發放優惠券
-- ✅ 確認優惠券有效性
-- ✅ 檢查會員是否符合條件
-- ✅ 通知會員（通過短信/郵件）
-
-### 數據安全
-
-#### 權限管理
-- ✅ 只有授權人員可以編輯會員信息
-- ✅ 重要操作需要管理員權限
-- ✅ 記錄所有操作日志
-
-#### 隱私保護
-- ✅ 不要隨意修改會員聯系方式
-- ✅ 修改密碼後通知會員
-- ✅ 避免在公開場合顯示會員信息
-
----
-
-**相關文檔**：
-- [用戶管理指南](./user-management.md)
-- [員工管理指南](./staff-management.md)
-- [優惠券管理指南](./coupon-management.md)
-
-**代碼參考**：
-- [MembershipAction 代碼參考](../cms-code-reference/MembershipAction-reference.md)
-
-**最後更新**：2026-07-03
-**適用角色**：客服人員、運營人員
+**最後更新**：2026-07-17  
+**資料狀態**：108 項已確認；8 項待進一步確認  
+**適用角色**：Account Servicing、Customer Service、營運人員、Marketing
