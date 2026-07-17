@@ -1,7 +1,7 @@
 {
-  "version": "2.1",
-  "lastUpdated": "2026-07-10",
-  "welcomeMessage": "👋 歡迎使用 CMS Knowledge Bot！\n\n我是你的 CMS 操作助手，可以回答各類操作問題。\n\n🔍 你可以：\n• 點擊下方快速問題開始\n• 輸入自己的問題\n• 點擊「刷新知識庫」獲取最新內容\n\n✨ 已更新：新上架流程、Company Tab 完整文檔！",
+  "version": "2.2",
+  "lastUpdated": "2026-07-17",
+  "welcomeMessage": "👋 歡迎使用 CMS Knowledge Bot！\n\n我是你的 CMS 操作助手，可以回答各類操作問題。\n\n🔍 你可以：\n• 點擊下方快速問題開始\n• 輸入自己的問題\n• 點擊「刷新知識庫」獲取最新內容\n\n✨ 已更新：進階 Coupon 操作、Braze 整合、Branded App 設定、Monthly Trigger Rules！\n\n🆕 新增內容：\n• Tier-based Birthday/Monthly Coupon 規則\n• Braze 第三方追蹤設定\n• Branded App 完整設定流程\n• Batch Operations 詳細步驟\n• Deep Link 創建指南",
   "quickQuestions": [
     {
       "id": 1,
@@ -98,6 +98,66 @@
       "question": "如何檢查上架是否完成？",
       "category": "上架流程",
       "priority": "medium"
+    },
+    {
+      "id": 17,
+      "question": "Tier 生日券可以 dispatch on join 嗎？",
+      "category": "Coupon 操作",
+      "priority": "high"
+    },
+    {
+      "id": 18,
+      "question": "如何設定 Braze 第三方追蹤？",
+      "category": "Push 管理",
+      "priority": "high"
+    },
+    {
+      "id": 19,
+      "question": "如何設定 Branded App？",
+      "category": "Brand 管理",
+      "priority": "high"
+    },
+    {
+      "id": 20,
+      "question": "如何進行 Coupon Batch Expire 操作？",
+      "category": "Coupon 操作",
+      "priority": "medium"
+    },
+    {
+      "id": 21,
+      "question": "如何創建 Deep Link？",
+      "category": "Coupon 操作",
+      "priority": "medium"
+    },
+    {
+      "id": 22,
+      "question": "KFC/PHD Brand App 設定有什麼不同？",
+      "category": "Brand 管理",
+      "priority": "medium"
+    },
+    {
+      "id": 23,
+      "question": "如何設定 Monthly Trigger Rule？",
+      "category": "Push 管理",
+      "priority": "high"
+    },
+    {
+      "id": 24,
+      "question": "Tier Card 折扣與其他 Coupon 如何互動？",
+      "category": "Coupon 操作",
+      "priority": "medium"
+    },
+    {
+      "id": 25,
+      "question": "如何設定年齡範圍？",
+      "category": "系統配置",
+      "priority": "low"
+    },
+    {
+      "id": 26,
+      "question": "如何進行 Batch Dispatch 操作？",
+      "category": "Coupon 操作",
+      "priority": "medium"
     }
   ],
   "keywordMapping": {
@@ -160,6 +220,25 @@
     "測試": ["測試", "test", "驗證", "verify", "檢查", "功能測試"],
     "驗證": ["驗證", "verify", "確認", "check", "test", "測試"],
     "準備": ["準備", "preparation", "preparing", "ready", "前期準備"],
-    "完成": ["完成", "complete", "finish", "done", "完成檢查"]
+    "完成": ["完成", "complete", "finish", "done", "完成檢查"],
+
+    "coupon": ["coupon", "優惠券", "折扣券", "優惠", "券"],
+    "braze": ["braze", "第三方追蹤", "third party", "事件追蹤", "event tracking"],
+    "batch": ["batch", "批量", "批次操作", "bulk operation", "批量處理"],
+    "expire": ["expire", "過期", "到期", "失效", "作廢"],
+    "dispatch": ["dispatch", "派發", "發送", "發放", "推送"],
+    "deep link": ["deep link", "深層連結", "連結生成", "link generation", "qr code"],
+    "branded app": ["branded app", "品牌app", "自有app", "品牌應用", "brand application"],
+    "monthly trigger": ["monthly trigger", "月度觸發", "每月規則", "monthly rule", "月度派發"],
+    "tier card": ["tier card", "等級卡", "會員卡", "級別卡", "membership card"],
+    "age range": ["age range", "年齡範圍", "年齡分段", "age group", "年齡設定"],
+    "eshop": ["eshop", "電商", "網店", "online shop", "網上商店"],
+    "birthday coupon": ["birthday coupon", "生日券", "生日優惠", "birthday offer", "生日優惠券"],
+    "monthly coupon": ["monthly coupon", "月度券", "每月優惠", "monthly offer", "月度優惠券"],
+    "entitlement": ["entitlement", "限領", "數量限制", "quantity limit", "領取限制"],
+    "trigger rule": ["trigger rule", "觸發規則", "自動規則", "automatic rule", "auto rule"],
+    "kfc phd": ["kfc phd", "kfc", "phd", "自有品牌app", "non storellet"],
+    "app id": ["app id", "應用id", "ios app", "android app", "应用编号"],
+    "faq": ["faq", "常見問題", "問題解答", "questions", "問題"]
   }
 }
