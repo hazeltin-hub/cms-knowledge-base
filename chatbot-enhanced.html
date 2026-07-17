@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Knowledge Bot</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang TC', 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      height: 85vh;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .status-badge {
+      background: rgba(255,255,255,0.2);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+
+    .github-btn {
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 6px;
+      color: white;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .github-btn:hover:not(:disabled) {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .github-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .chat-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 15px 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .user-message {
+      background: #667eea;
+      color: white;
+      align-self: flex-end;
+    }
+
+    .bot-message {
+      background: #f3f4f6;
+      color: #333;
+      border: 1px solid #e0e0e0;
+      align-self: flex-start;
+    }
+
+    .input-area {
+      padding: 15px 20px;
+      background: #f9fafb;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      gap: 10px;
+    }
+
+    textarea {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 50px;
+      max-height: 150px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    button.send-btn {
+      padding: 12px 20px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button.send-btn:hover:not(:disabled) {
+      background: #5568d3;
+    }
+
+    button.send-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .message-content h1 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 8px 0 4px 0;
+    }
+
+    .message-content h2 {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 6px 0 3px 0;
+    }
+
+    .message-content h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 5px 0 2px 0;
+    }
+
+    .message-content table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 8px 0;
+      font-size: 12px;
+    }
+
+    .message-content td {
+      border: 1px solid #ddd;
+      padding: 4px 6px;
+      text-align: left;
+    }
+
+    .message-content li {
+      margin: 3px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-left">
+        <h1>🤖 CMS Knowledge Bot</h1>
+        <div class="status-badge" id="statusBadge">本地模式</div>
+      </div>
+      <button class="github-btn" id="githubBtn" onclick="loadFromGitHub()">🔄 從 GitHub 更新</button>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+      <div class="message bot-message">
+        <div>👋 歡迎使用 CMS Knowledge Bot (增強版)</div>
+        <div style="margin-top: 10px;">📱 本地模式 - 已內建完整 CMS 知識庫</div>
+        <div style="margin-top: 10px;">💡 可回答：</div>
+        <div style="margin-top: 5px;">🎯 <strong>新增主題：</strong></div>
+        <div style="margin-top: 5px;">• Tier生日券規則 & Braze設定</div>
+        <div style="margin-top: 5px;">• Branded App完整設定流程</div>
+        <div style="margin-top: 5px;">• Batch Operations詳細步驟</div>
+        <div style="margin-top: 5px;">• Deep Link創建指南</div>
+        <div style="margin-top: 5px;">• 年齡範圍 & Monthly Trigger設定</div>
+        <div style="margin-top: 10px;">🔍 <strong>原有主題：</strong></div>
+        <div style="margin-top: 5px;">• Brand Group 關係、組織架構、新上架流程</div>
+        <div style="margin-top: 5px;">• Push管理、Membership管理、Assets管理</div>
+        <div style="margin-top: 10px;">🔄 點擊右上角可從 GitHub 獲取最新文檔</div>
+        <div style="margin-top: 10px;">✨ <strong>試試問：</strong> "Tier生日券可以dispatch on join嗎？"</div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <div class="quick-questions" style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
+        <button class="quick-question-btn" onclick="askQuestion('Tier生日券可以dispatch on join嗎？')">🎫 Tier生日券規則</button>
+        <button class="quick-question-btn" onclick="askQuestion('如何設定Braze第三方追蹤？')">🔔 Braze設定</button>
+        <button class="quick-question-btn" onclick="askQuestion('如何設定Branded App？')">📱 Branded App</button>
+        <button class="quick-question-btn" onclick="askQuestion('如何進行Coupon Batch Expire操作？')">🔄 Batch Expire</button>
+        <button class="quick-question-btn" onclick="askQuestion('如何創建Deep Link？')">🔗 Deep Link</button>
+      </div>
+      <textarea id="messageInput" placeholder="輸入你的問題..."></textarea>
+      <button class="send-btn" id="sendButton">發送</button>
+    </div>
+  </div>
+
+  <style>
+    .quick-question-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .quick-question-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+  </style>
+
+  <script>
+    // 快速問題功能
+    function askQuestion(question) {
+      const messageInput = document.getElementById('messageInput');
+      messageInput.value = question;
+      sendMessage();
+    }
+
+    // 本地知識庫 - 立即可用
+
+  <script>
+    // 本地知識庫 - 立即可用
+    const localKnowledgeBase = {
+      "組織架構": {
+        title: "CMS 組織架構和層級關係",
+        content: `
+## 🏢 CMS 組織架構層級
+
+CMS 系統採用 **4 層級架構**，從上到下依次為：
+
+### 1️⃣ Company (公司層)
+- **最高層級**，代表整個企業或組織
+- 一個 Company 可以有多個 Group
+- 例如：Crozz Limited
+
+### 2️⃣ Group (品牌組/集團層)
+- **中間層級**，代表品牌集團或業務組
+- 必須歸屬於一個 Company
+- 一個 Group 可以有多個 Brand
+- 例如：Brand A Group, Brand B Group
+
+### 3️⃣ Brand (品牌層)
+- **核心業務層**，代表具體品牌
+- 必須歸屬於一個 Group
+- 一個 Brand 可以有多個 Shop
+- 例如：Starbucks, McDonald's
+
+### 4️⃣ Shop (店鋪層)
+- **最基層**，代表具體門店
+- 必須歸屬於一個 Brand
+- 例如：Central Store, Tsim Sha Tsui Branch
+
+---
+
+## ❓ 為什麼要按順序創建？
+
+### 📌 **技術原因**
+1. **外鍵約束**：下層必須引用上層的 ID
+   - 創建 Brand 時需要選擇所屬 Group
+   - 創建 Shop 時需要選擇所屬 Brand
+   - 如果沒有上層，下層無法創建
+
+2. **數據完整性**：確保組織關係正確
+   - 系統需要知道每個實體的歸屬
+   - 避免孤兒記錄（沒有上級的記錄）
+
+### 💼 **業務原因**
+1. **積分規則統一**：同 Group 的品牌共享積分規則
+2. **會員管理**：按 Group 或 Brand 管理會員等級
+3. **報表分析**：按層級統計銷售和會員數據
+
+---
+
+## 🔄 正確的創建順序
+
+**新上架必須按照：**
+1. Company → 2. Group → 3. Brand → 4. Shop
+
+**常見錯誤：**
+- ❌ 跳過 Group 直接創建 Brand
+- ❌ 忘記創建 Company
+- ❌ 創建順序混亂
+
+**正確做法：**
+- ✅ 先創建 Company
+- ✅ 在 Company 下創建 Group
+- ✅ 在 Group 下創建 Brand
+- ✅ 在 Brand 下創建 Shop
+        `
+      },
+      "Brand Group 關係": {
+        title: "Brand 和 Group 的關係",
+        content: `
+## 🔗 Brand 和 Group 的關係
+
+### 🎯 **核心關係**
+**Brand 是 Group 的子級，一個 Group 可以包含多個 Brand**
+
+### 📊 **結構示意**
+\`\`\`
+Company (公司)
+  └── Group A (品牌組)
+        ├── Brand 1 (品牌 1)
+        ├── Brand 2 (品牌 2)
+        └── Brand 3 (品牌 3)
+  └── Group B (品牌組)
+        ├── Brand 4 (品牌 4)
+        └── Brand 5 (品牌 5)
+\`\`\`
+
+### 🔗 **具體關係**
+
+#### 1. **隸屬關係**
+- Brand **必須**隸屬於一個 Group
+- 創建 Brand 時必須選擇所屬 Group
+- Brand 不能獨立存在
+
+#### 2. **繼承關係**
+Brand 從 Group 繼承以下設定：
+- **積分規則** (Point Ratio)
+- **會員等級制度**
+- **條款和條件** (Terms & Conditions)
+- **隱私政策** (Privacy Policy)
+
+#### 3. **共享關係**
+同 Group 下的 Brand 共享：
+- **會員數據庫** - 會員可在同 Group 不同品牌累積積分
+- **積分系統** - 統一的積分兌換規則
+- **優惠活動** - 可跨品牌使用
+
+#### 4. **獨立關係**
+Brand 保持獨立的特性：
+- **品牌形象** - 各自有 Logo、背景圖
+- **店鋪網絡** - 各自管理自己的 Shop
+- **營運設定** - 各自的營業時間、聯繫方式
+
+### 💼 **實際例子**
+
+#### 例子 1：餐飲集團
+\`\`\`
+Company: ABC Food Group
+  └── Group: Western Dining
+        ├── Brand: Pizza Hut
+        │     ├── Shop: Pizza Hut Central
+        │     └── Shop: Pizza Hut Mong Kok
+        └── Brand: KFC
+              ├── Shop: KFC Causeway Bay
+              └── Shop: KFC Tsim Sha Tsui
+\`\`\`
+
+**關係說明：**
+- Pizza Hut 和 KFC 都屬於 "Western Dining" Group
+- 會員在 Pizza Hut 累積的積分可以在 KFC 使用
+- 兩個品牌共享會員等級和積分規則
+- 但各自有自己的品牌形象和店鋪
+
+### ⚙️ **技術實現**
+
+#### 在 CMS 中：
+1. **Group 設定**
+   - Point Ratio: "$1 = 1 point(s)"
+   - Member No. Limit: -1 (無限制)
+   - Terms & Conditions: HTML 內容
+
+2. **Brand 創建時**
+   - Group 欄位：選擇所屬 Group（必填）
+   - 自動繼承 Group 的積分規則
+   - 可選擇是否使用 Group 的 T&C
+
+### ❓ **常見問題**
+
+#### Q: 一個 Brand 可以屬於多個 Group 嗎？
+A: **不可以**。一個 Brand 只能屬於一個 Group。
+
+#### Q: Group 可以沒有 Brand 嗎？
+A: **可以**。Group 可以先創建，稍後再添加 Brand。
+
+#### Q: 如何更改 Brand 的所屬 Group？
+A: **一般不支持**。因為涉及積分和會員數據，更改 Group 可能導致數據混亂。
+
+### 💡 **最佳實踐**
+1. **規劃 Group 結構** - 按業務類型或品牌定位分組
+2. **設定共享規則** - 確保同 Group 的品牌能共享積分
+3. **管理品牌層級** - 先創建 Group，再創建 Brand
+        `
+      },
+      "為什麼要先創建組": {
+        title: "為什麼創建品牌要先創建組",
+        content: `
+## ❓ 為什麼創建 Brand 要先創建 Group？
+
+### 🎯 **直接答案**
+因為在 CMS 系統中，**Brand 必須歸屬於一個 Group**，這是系統的架構要求。
+
+### 📋 **詳細解釋**
+
+#### 1. 系統架構設計
+CMS 採用 4 層架構：
+- **Company** (公司) → **Group** (品牌組) → **Brand** (品牌) → **Shop** (店鋪)
+
+每個下層都必須選擇上層：
+- 創建 Brand 時，**必須選擇**所屬的 Group
+- 創建 Shop 時，**必須選擇**所屬的 Brand
+
+#### 2. 不可避免的依賴關係
+- Brand 的積分規則繼承自 Group
+- Brand 的會員等級由 Group 定義
+- Brand 的 T&C 使用 Group 的設定
+
+#### 3. 如果沒有 Group 會怎樣？
+❌ **無法創建 Brand**，因為：
+- Brand 創建頁面有 **"Group" 必填位**
+- 必須從下拉菜單選擇一個 Group
+- 如果沒有 Group 可選，無法保存
+
+### 💡 **比喻理解**
+就像蓋房子：
+- 先打地基 (Company)
+- 再建框架 (Group)
+- 然後裝修 (Brand)
+- 最後擺設家具 (Shop)
+
+你不能在不蓋框架的情況下直接裝修！
+
+### ✅ **正確做法**
+1. 創建 Company（如：Croxx Limited）
+2. 創建 Group（如：Food & Beverage Group）
+3. 創建 Brand（在 Group 下創建，如：Starbucks）
+4. 創建 Shop（在 Brand 下創建，如：Central Store）
+
+### 📞 **實際操作**
+在 Brand 創建頁面，你會看到：
+- **Group (必填)**：[下拉菜單選擇]
+- 這個下拉菜單只顯示已創建的 Group
+- 所以必須先創建 Group 才能選擇
+        `
+      },
+      "新上架流程": {
+        title: "新上架流程檢查清單",
+        content: `
+## 🚀 新上架流程概述
+
+新上架需要完成以下5個步驟：
+
+### 步驟 1: 創建 Company (公司)
+**必填位**：
+- Company Name (必填): 例如"Crozz Limited"
+- Join Date (必填): 合作開始日
+- Status (必填): 設為"Active"
+
+### 步驟 2: 創建 Company Group
+**必填位**：
+- Group Name (English) (必填)
+- Group Name (Local Language) (必填)
+- Company (必填): 選擇所屬公司
+- Point Ratio (必填): 例如"$1 = 1 point(s)"
+- Member No. Limit (必填): 設為"-1"
+- Terms & Conditions (必填): HTML格式
+
+### 步驟 3: 創建 Brand
+**必填位**：
+- Brand Name (English) (必填)
+- Brand Name (Local Language) (必填)
+- Brand Code (必填)
+- Group (必填): 選擇所屬組
+- Tab (必填): "0"或"1"
+- Restaurant Category (必填)
+- Brand Logo (必填)
+
+### 步驟 4: 創建 Shop
+**必填位**：
+- Shop Name (English) (必填)
+- Shop Name (Local Language) (必填)
+- Brand (必填): 選擇所屬品牌
+- Region (English) (必填): HK Island/Kowloon/New Territories
+- Address (English) (必填)
+- Address (Local Language) (必填)
+
+### 步驟 5: Featured Items (選填)
+- Campaign Name (必填)
+- Section (必填)
+- Brand (必填)
+- Image (English) (必填)
+- Start Date (必填)
+- End Date (必填)
+- Priority (必填)
+        `
+      },
+      "創建品牌": {
+        title: "如何創建品牌",
+        content: `
+## 🏷️ 創建品牌完整步驟
+
+### 步驟 1：訪問品牌管理
+1. 登錄 CMS 系統
+2. 點擊 "Company" → "Brands"
+3. 點擊右上角 "Add New" 按鈕
+4. URL: /cms/company/brand/0
+
+### 步驟 2：填寫基本信息
+**必填字段**：
+| 字段名稱 | 字段類型 | 必填 | 說明 |
+|----------|----------|------|------|
+| **Brand Name** | 文本輸入 | ✅ | 品牌名稱 |
+| **Brand Name (中文)** | 文本輸入 | ✅ | 品牌中文名稱 |
+| **Group** | 下拉菜單 | ✅ | 選擇所屬組 |
+| **Status** | 下拉菜單 | ✅ | Active/Inactive/Invisible |
+
+### 步驟 3：上傳圖片
+- Logo (必填): 1:1 logo，建議1MB以下
+- Background Image (建議必填): 品牌背景圖
+
+### 步驟 4：配置積分
+- Max Point Earn Per Invoice (必填): 99999
+- Max. Time of Earn Point per Day (必填): 999
+- Max. Time of Earn Point per Week (必填): 999
+
+### 步驟 5：功能設置
+- Show Point Or Stamp on App (建議必填): 設為"Yes"
+- Enable Brand Profile (建議必填): Tick
+- Show Redemption Page on App (視乎需要): 設為"Yes"
+
+### 步驟 6：保存
+點擊 "Save" 按鈕完成創建
+        `
+      },
+      "品牌必填位": {
+        title: "品牌必填位有哪些",
+        content: `
+## 🏷️ 品牌必填位檢查清單
+
+### 基本信息必填位
+1. **Brand Name (English)** ✅ - 英文品牌名
+2. **Brand Name (Local Language)** ✅ - 中文品牌名
+3. **Brand Code** ✅ - 商戶名英文首字母
+4. **Group** ✅ - 選擇所屬組
+5. **Display Sequence** ✅ - 控制排序順序
+6. **Tab** ✅ - "0"(Popular) 或 "1"(Premium)
+7. **Restaurant Category** ✅ - 例如：Cafe
+
+### 圖片必填位
+8. **Brand Logo** ✅ - 1:1比例，建議1MB以下
+
+### 積分配置必填位
+9. **Max Point Earn Per Invoice** ✅ - 建議值：99999
+10. **Max. Time of Earn Point per Day** ✅ - 建議值：999
+11. **Max. Time of Earn Point per Week** ✅ - 建議值：999
+
+### 時間設定必填位
+12. **Join Date** ✅ - 品牌有效期開始
+13. **Expiry Date** ✅ - 品牌到期日
+
+### 功能設定必填位
+14. **Show Point Or Stamp on App** (建議必填) - 建議值：Yes
+15. **Enable Brand Profile** (建議必填) - 建議值：Tick
+
+### 營運設定必填位
+16. **Status** ✅ - 必須設為："Active"
+        `
+      },
+      "店鋪必填位": {
+        title: "店鋪必填位有哪些",
+        content: `
+## 🏪 店鋪必填位檢查清單
+
+### 基本信息必填位
+1. **Shop Name (English)** ✅ - 英文分店名
+2. **Shop Name (Local Language)** ✅ - 中文分店名
+3. **Reference ID** ✅ - 建議：001, 002, 003
+4. **Brand** ✅ - 選擇所屬品牌
+
+### 地區設定必填位
+5. **Region (English)** ✅ - Hong Kong Island/Kowloon/New Territories
+6. **Region (Local Language)** ✅ - 香港島/九龍/新界
+7. **District (English)** ✅ - 例如：Kwun Tong
+8. **District (Local Language)** ✅ - 例如：觀塘
+
+### 位置資訊必填位
+9. **Address (English)** ✅ - 英文地址
+10. **Address (Local Language)** ✅ - 中文地址
+
+### 營運設定必填位
+11. **Status** ✅ - 必須設為："Active"
+
+### 建議必填位
+12. **Telephone** (建議必填) - 分店聯絡電話
+13. **Opening Hours (English)** (建議必填) - 例如：10:00 - 22:00
+14. **Opening Hours (Local Language)** (建議必填) - 例如：10:00 - 22:00（星期一至日）
+
+### 選填位
+15. **Geo Location** (選填) - 經度 - 緯度，例如：114.2096478 - 22.3156595
+16. **Fax** (選填) - 傳真號碼
+        `
+      },
+      "Group必填位": {
+        title: "Group必填位有哪些",
+        content: `
+## 🏢 Company Group 必填位檢查清單
+
+### 基本信息必填位
+1. **Group Name (English)** ✅ - 英文組名
+2. **Group Name (Local Language)** ✅ - 中文組名
+3. **Company** ✅ - 選擇所屬公司
+4. **Grade** ✅ - 建議值：Standard
+
+### 圖片必填位
+5. **Group Logo** (建議必填) - App內顯示logo
+
+### 積分設定必填位
+6. **Point Ratio** ✅ - 必須包含"$1 = X point(s)"格式
+7. **Member No. Limit** ✅ - 建議值：-1（無限制）
+8. **CS App Point Limit** ✅ - 建議值：-1（無限制）
+
+### 條款設定必填位
+9. **Terms & Conditions (English)** ✅ - HTML格式
+10. **Terms & Conditions (Local Language)** ✅ - HTML格式
+
+### 營運設定必填位
+11. **Status** ✅ - 必須設為："Active"
+
+### 選填位（視乎需要）
+12. **Enable Master Brand** - 多品牌共用時啟用
+13. **Email Needed** - 是否要求會員email
+14. **Privacy Policy** - HTML格式
+        `
+      },
+      "Tier生日券規則": {
+        title: "Tier生日券可以dispatch on join嗎？",
+        content: `
+## 🎫 Tier-based Birthday/Monthly Coupon 規則
+
+### ❗ 重要規則：不可 tick "Dispatch on join"
+
+**適用範圍：**
+- 有分 Tier 的 Birthday Coupon
+- 有分 Tier 的 Monthly Coupon
+
+**原因：**
+- 避免新會員自動收到不應得的生日/每月優惠
+- 除非所有 Tier Member 都收到相同的生日 Offer
+
+**操作建議：**
+1. 創建 Birthday/Monthly Coupon 時
+2. **❌ 不要 tick "Dispatch on join"**
+3. 只讓符合條件的會員在生日/每月自動收到
+
+**特殊情況：**
+- 如果所有 Tier Member 都收到完全相同的 Offer
+- 才可以考虑 tick "Dispatch on join"
+
+### ⚠️ 常見錯誤
+- ❌ 新會員註冊後立即收到高 Tier 生日券
+- ❌ 派發不應該給該會員等級的每月優惠
+- ❌ 造成優惠濫用或預算超支
+
+### ✅ 正確做法
+- 按會員等級分派不同優惠
+- 確保只有符合條件的會員收到
+- 定期檢查 Coupon 派發記錄
+        `
+      },
+      "Braze設定": {
+        title: "如何設定Braze第三方追蹤？",
+        content: `
+## 🔔 Braze 第三方事件追蹤設定
+
+### Bypass Internal Third Party Event Tracking
+
+**設定決策表：**
+
+| 情況 | 設定要求 | 說明 |
+|---|---|---|
+| **無 Braze 設定的 Brand** | ✅ **需要 tick** | CMS 直接派發，不經 Braze |
+| **KFC/PHD** | ❌ **唔需要 tick** | 使用自有 Braze 帳戶 |
+| **其他有 Braze 的 Brand** | ❌ **唔需要 tick** | 經 Braze 派發 |
+
+**🎯 設定邏輯：**
+- **Coupon 派畀所有 Brand Member** + 同時無 Set Braze → 請 CMS 派果時 tick Bypass
+- **現有 Coupon/Discount** → 會顯示 "default"，代表發送去兩個 Braze 帳戶
+
+### Monthly Trigger Rule 設定
+
+**📋 建議設定：**
+- ✅ **Untick** "Submit To 3rd Party Event Tracking"
+
+**🔍 功能說明：**
+- 可以排查客人 Account 裡面有無張 Coupon
+- 有 Coupon 就唔再派發（避免重複）
+- 適用於 Birthday Coupon 自動派發
+- 適用於 Monthly Coupon 自動派發
+
+### ⚠️ 重要提醒
+- **KFC/PHD** 使用自有 Braze 帳戶，不需要 tick Bypass
+- **其他 Brand** 通常經 Storellet Braze 派發
+- 測試時要確認 Coupon 是否正確到達會員 Account
+        `
+      },
+      "BrandedApp設定": {
+        title: "如何設定Branded App？",
+        content: `
+## 📱 Branded App 完整設定流程
+
+### Step 1: 啟用 Brand Profile
+1. 前往 **Company > Brands**
+2. 選擇目標 Brand
+3. ✅ **Tick "Enable Brand Profile"**
+4. 儲存後就會有 Branded Profile 顯示
+
+### Step 2: 設置背景圖
+**位置：** Company > Brands > Branded App > Thumbnail
+1. 在 Branded App 區塊找到 **Thumbnail**
+2. 📷 **上傳背景圖**
+3. 儲存設定
+
+### Step 3: 設置條款及細則
+**位置：** Company > Brands > Branded App > Terms and Conditions
+**要求：** 必須填寫三種語言版本
+1. 填寫英文 T&C
+2. 填寫中文 T&C
+3. 如需要，填寫其他語言 T&C
+
+### Step 4: 設置簡介
+**位置：** Company > Brands > Short Description (Local Language)
+1. 填寫品牌簡介
+2. 儲存設定
+
+### Step 5: 設置 App IDs
+**位置：** Company > Brands > Branded App
+**需要的 App IDs：**
+- 📱 **Android App ID** (AOS)
+- 📱 **iOS App ID**
+
+### KFC/PHD 特殊設定
+| Brand 類型 | 設定選項 | 說明 |
+|---|---|---|
+| **KFC/PHD** | Non Storellet Only | 使用自有 Brand App |
+| **其他 Brand** | Storellet Only | 使用 Storellet App |
+
+### 📋 檢查清單
+- [ ] Brand Profile 已啟用
+- [ ] 背景圖已上傳
+- [ ] T&C 已填寫三種語言
+- [ ] Short Description 已填寫
+- [ ] Android App ID 已設置
+- [ ] iOS App ID 已設置
+        `
+      },
+      "BatchExpire操作": {
+        title: "如何進行Coupon Batch Expire操作？",
+        content: `
+## 🔄 Coupon Batch Expire 操作步驟
+
+### 操作目的
+將 Del Coupon/轉做 Used 嗰堆 Member ID 批量處理
+
+### Step 1: 準備 CSV 檔案
+- 📄 **整理需要過期的 Member ID**
+- 📊 **儲存成 CSV 格式**
+
+### Step 2: 初始化操作
+1. 前往 **Coupon Batch Operation**
+2. 選擇 **"Expire"** 功能
+3. 塞入 **CSV 檔案**
+4. 選擇 **Brand**
+5. 選擇 **Coupon**
+6. 按 **「Initialize」**
+
+### Step 3: 設定日期條件
+- 📅 **要填日子嗰堆係 OR option**
+- 🎯 **選 "Active On" 填寫**
+- 📝 **例子：Coupon 係 2026年3月1日生效** → 寫「3月1日」
+- ⏰ **時間無關係**
+
+### Step 4: 完成操作
+- 寫 **Remark**
+- 按 **「Execute」**
+
+### ❗ 重要提示
+- ❗ **Use Expire Before 呢個 Logic 唔會搵埋張 Coupon 係咪 Active 緊**
+- ✅ **只係按日期條件處理**
+
+### ⚠️ 操作風險
+- 高風險操作，會直接改變會員 Coupon 狀態
+- 操作前需要確認內部審批流程
+- 建議有另一位同事 Double Check
+        `
+      },
+      "DeepLink創建": {
+        title: "如何創建Deep Link？",
+        content: `
+## 🔗 Deep Link 創建步驟
+
+### Step 1: 啟用 Deep Link
+- ✅ **Tick "Create Deep Link"**
+
+### Step 2: 選擇 Link 類型
+
+| Link 類型 | 說明 | 使用情況 |
+|---|---|---|
+| **Public** | 淨係 generate 一條 Link | 通用推廣連結 |
+| **Individual** | Unique Link（每人一條） | 個人化優惠連結 |
+
+### Step 3: 設定數量
+- 🔢 **決定需要幾多數量**
+- 📊 **按 Target Audience 大小**
+
+### Step 4: 生成連結
+- 🔗 **Gen Link 成 QR Code**
+- 📱 **比佢客戶使用**
+- ✅ **自己試拎一次先**
+
+### 💡 使用建議
+- **推廣活動** → 使用 Public Link
+- **個人優惠** → 使用 Individual Link
+- **線下活動** → 將 Link 轉成 QR Code
+- **測試** → 自己先試領取一次確保正常
+
+### ⚠️ 注意事項
+- 確认 Link 有效期
+- 測試 QR Code 掃描功能
+- 驗證 Coupon 領取流程
+        `
+      },
+      "TierCard折扣": {
+        title: "Tier Card折扣與其他Coupon如何互動？",
+        content: `
+## 💳 Tier Card 與 Coupon 互動規則
+
+### Tier Card 自動折扣
+
+**重要規則：**
+- ✅ **Tier Card 設定折扣率後** → 自動生效
+- 💳 **持卡人自動享受折扣** → 無需额外 Coupon
+- 🎯 **與其他 Coupon 的互動** → 需要前線處理
+
+### 🔄 操作互動表
+
+| 情況 | 處理方式 | 說明 |
+|---|---|---|
+| **客人要用其他 Coupon** | 前線需要 Cancel 個 Discount 先用得 | 避免重複折扣 |
+| **Tier 折扣 + Coupon 折扣** | 需要前線手動處理衝突 | 確認最終折扣 |
+| **優先級問題** | Tier 折扣通常優先於一般 Coupon | 系統邏輯 |
+
+### ⚠️ 前線操作注意
+1. **確認會員等級** - 檢查持卡人的 Tier
+2. **計算最終折扣** - Tier vs Coupon
+3. **避免重複優惠** - 防止濫用
+4. **記錄特殊處理** - 供後續參考
+
+### 💡 最佳實踐
+- 培訓前線員工熟悉 Tier 折扣邏輯
+- 制定清晰的 Coupon 使用政策
+- 定期檢查 Tier 折扣 + Coupon 互動情況
+        `
+      },
+      "年齡範圍設定": {
+        title: "如何設定年齡範圍？",
+        content: `
+## 👶 年齡範圍設定指南
+
+### 設定位置
+**Application > Config > Age Range**
+
+### 按 Group 設定年齡分段
+
+```
+12-17
+18-25
+26-30
+31-35
+36-40
+41-50
+51-64
+65-100
+```
+
+### 操作步驟
+1. 前往 **Application > Config**
+2. 找到 **Age Range** 設定
+3. 設置年齡分段（按 Group 需求）
+4. 儲存設定
+
+### 使用情況
+- 會員年齡分群
+- 營銷活動目標篩選
+- 數據分析分組
+
+### 💡 設定建議
+- 按營商目標客群調整分段
+- 考慮法律法規要求
+- 與會員註冊年齡限制一致
+        `
+      },
+      "MonthlyTriggerRule": {
+        title: "如何設定Monthly Trigger Rule？",
+        content: `
+## 📅 Monthly Trigger Rule 設定指南
+
+### Submit To 3rd Party Event Tracking
+
+**建議設定：**
+- ✅ **Untick** 建議設定
+
+**功能說明：**
+- 🔍 **排查功能** - 可以排查客人 Account 裡面有無張 Coupon
+- 🎯 **避免重複派發** - 有 Coupon 就唔再派發
+
+### 操作建議
+1. 前往 Monthly Trigger Rule 設定
+2. 找到 **Submit To 3rd Party Event Tracking**
+3. ✅ **Untick** 呢個 option
+4. 儲存設定
+
+### 使用情況
+- Birthday Coupon 自動派發
+- Monthly Coupon 自動派發
+- 需要避免重複派發的 Trigger Rule
+
+### ⚠️ 重要提醒
+- 設定前要確認 Trigger Rule 邏輯
+- 測試時要檢查重複派發情況
+- 定期檢查 Rule 執行記錄
+        `
+      }
+    };
+
+    // 當前知識庫（默認使用本地）
+    let knowledgeBase = {};
+    let isGitHubMode = false;
+
+    // 初始化本地知識庫
+    function initLocalKnowledge() {
+      knowledgeBase = {};
+      for (const [key, value] of Object.entries(localKnowledgeBase)) {
+        knowledgeBase[key] = {
+          title: value.title,
+          content: value.content,
+          url: null
+        };
+      }
+      isGitHubMode = false;
+      document.getElementById('statusBadge').textContent = '本地模式';
+      console.log('✅ 本地知識庫已載入');
+    }
+
+    // 從 GitHub 加載（使用 raw content URL）
+    async function loadFromGitHub() {
+      const githubBtn = document.getElementById('githubBtn');
+      const statusBadge = document.getElementById('statusBadge');
+
+      githubBtn.disabled = true;
+      statusBadge.textContent = '更新中...';
+
+      try {
+        const GITHUB_OWNER = 'hazeltin-hub';
+        const GITHUB_REPO = 'cms-knowledge-base';
+        const GITHUB_BRANCH = 'main';
+
+        // 使用 jsDelivr CDN 訪問 GitHub 文件，避免 CORS 問題
+        const files = [
+          'cms-operations/company-brand-management.md',
+          'cms-operations/new-launch-checklist.md',
+          'customer-faq/company-brand-faq.md',
+          'cms-operations/login-guide.md',
+          'cms-operations/user-management.md',
+          'cms-operations/staff-management.md',
+          'cms-operations/push-management.md',
+          'cms-operations/membership-management.md',
+          'cms-operations/assets-management.md',
+          'cms-operations/application-management.md',
+          'cms-operations/coupon-operations-advanced.md',
+          'cms-operations/dashboard-guide.md',
+          'cms-operations/report-analytics-guide.md'
+        ];
+
+        let loadedCount = 0;
+        const newKnowledgeBase = {};
+
+        for (const filePath of files) {
+          try {
+            // 使用 jsDelivr CDN，支持 CORS
+            const cdnUrl = `https://cdn.jsdelivr.net/gh/${GITHUB_OWNER}/${GITHUB_REPO}@${GITHUB_BRANCH}/${filePath}`;
+            const htmlUrl = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/blob/${GITHUB_BRANCH}/${filePath}`;
+
+            const response = await fetch(cdnUrl);
+
+            if (response.ok) {
+              const content = await response.text();
+              const fileName = filePath.split('/').pop().replace('.md', '');
+
+              newKnowledgeBase[filePath] = {
+                title: fileName,
+                content: content,
+                url: htmlUrl
+              };
+              loadedCount++;
+              console.log(`✅ 已加載: ${fileName}`);
+            } else {
+              console.warn(`跳過文件: ${filePath} (HTTP ${response.status})`);
+            }
+          } catch (error) {
+            console.warn(`跳過文件: ${filePath}`, error.message);
+          }
+        }
+
+        if (loadedCount > 0) {
+          knowledgeBase = newKnowledgeBase;
+          isGitHubMode = true;
+          statusBadge.textContent = `GitHub模式 (${loadedCount}個文檔)`;
+          addSystemMessage(`✅ 已從 GitHub 加載 ${loadedCount} 個最新文檔`);
+        } else {
+          throw new Error('沒有成功加載任何文檔');
+        }
+
+      } catch (error) {
+        console.warn('GitHub 加載失敗，保持本地模式:', error.message);
+        initLocalKnowledge();
+        addSystemMessage('⚠️ GitHub 連接失敗，已切換回本地模式');
+      } finally {
+        githubBtn.disabled = false;
+      }
+    }
+
+    // 添加系統消息
+    function addSystemMessage(text) {
+      const chatContainer = document.getElementById('chatContainer');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message bot-message';
+      messageDiv.innerHTML = text;
+      chatContainer.appendChild(messageDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // 搜索知識庫（增強版）
+    function searchKnowledge(query) {
+      const results = [];
+      const queryLower = query.toLowerCase();
+
+      // 增強的關鍵詞映射表
+      const keywordMapping = {
+        // Coupon 操作相關
+        'tier生日券': ['tier', '生日券', 'birthday coupon', 'birthday', 'tier coupon', 'dispatch on join'],
+        'braze': ['braze', '第三方追蹤', 'third party', 'event tracking', 'bypass'],
+        'batch操作': ['batch', 'expire', 'expire', 'dispatch', 'used', '批量'],
+        'deep link': ['deep link', '深層連結', 'link', 'qr code', '連結'],
+        'branded app': ['branded app', '品牌app', 'app設定', 'app id'],
+        'monthly trigger': ['monthly trigger', '月度觸發', 'monthly rule', '每月規則', 'trigger rule'],
+        'tier card': ['tier card', '等級卡', '會員卡', 'discount card', '折扣卡'],
+        '年齡範圍': ['年齡範圍', 'age range', '年齡分段', 'age group'],
+
+        // 原有關鍵詞
+        '新上架': ['上架', 'launch', '新上架', 'onboarding', 'go live'],
+        '公司': ['公司', 'company', 'organization'],
+        '品牌': ['品牌', 'brand'],
+        '店鋪': ['店鋪', 'shop', 'store'],
+        '組': ['組', 'group', 'company group'],
+        '員工': ['員工', 'staff', '職員'],
+        '會員': ['會員', 'member', '用戶'],
+        '積分': ['積分', 'point', '點數'],
+        '優惠券': ['優惠券', 'coupon', '折扣券'],
+        '推送': ['推送', 'push', '發送'],
+        '報表': ['報表', 'report', '數據']
+      };
+
+      // 識別問題類型
+      const questionTypes = {
+        why: /為什麼|點解|why|原因|因何|緣故/,
+        how: /如何|怎樣|怎麼|how|方式|方法/,
+        what: /什麼|咗|what|是啥|是甚/,
+        which: /邊個|哪些|which|哪一/,
+        order: /先|後|順序|次序|步驟|step/,
+        can: /可不可以|可否|can|能否|是否/,
+        should: /應該|should|建議|推荐/
+      };
+
+      // 提取核心關鍵詞（移除疑問詞）
+      let coreQuery = queryLower;
+      Object.values(questionTypes).forEach(pattern => {
+        coreQuery = coreQuery.replace(pattern, ' ');
+      });
+      let keywords = coreQuery.split(/\s+/).filter(w => w.length > 1);
+
+      // 增強關鍵詞 - 使用映射表擴展搜索詞
+      const enhancedKeywords = [...keywords];
+      keywords.forEach(keyword => {
+        for (const [mainKey, relatedKeys] of Object.entries(keywordMapping)) {
+          if (relatedKeys.includes(keyword) && !enhancedKeywords.includes(mainKey)) {
+            enhancedKeywords.push(mainKey);
+          }
+        }
+      });
+
+      console.log('🔍 原始問題:', query);
+      console.log('🎯 核心關鍵詞:', keywords);
+      console.log('🚀 增強關鍵詞:', enhancedKeywords);
+
+      for (const [key, doc] of Object.entries(knowledgeBase)) {
+        let score = 0;
+        const content = doc.content.toLowerCase();
+        const title = doc.title.toLowerCase();
+
+        // 標題完全匹配（最高分）
+        if (title.includes(queryLower) || queryLower.includes(title)) {
+          score += 100;
+        }
+
+        // 使用增強關鍵詞進行匹配
+        enhancedKeywords.forEach(keyword => {
+          // 標題精確匹配
+          if (title.includes(keyword) && keyword.length > 2) {
+            score += 50;
+          }
+          // 標題包含匹配
+          else if (title.includes(keyword)) {
+            score += 25;
+          }
+          // 關鍵詞包含標題
+          else if (keyword.includes(title) && title.length > 3) {
+            score += 15;
+          }
+
+          // 內容匹配（加權更高）
+          if (content.includes(keyword)) {
+            score += 8;
+          }
+        });
+
+        // 問題類型加分（更精確）
+        if (questionTypes.why.test(queryLower)) {
+          if (title.includes('為什麼') || title.includes('原因') ||
+              title.includes('架構') || title.includes('先') ||
+              title.includes('規則') || title.includes('邏輯')) {
+            score += 35;
+          }
+        }
+
+        if (questionTypes.how.test(queryLower)) {
+          if (title.includes('如何') || title.includes('方法') || title.includes('步驟') ||
+              title.includes('設定') || title.includes('配置') || title.includes('操作')) {
+            score += 35;
+          }
+        }
+
+        if (questionTypes.can.test(queryLower)) {
+          if (title.includes('可不可以') || title.includes('可以') || title.includes('能否')) {
+            score += 25;
+          }
+        }
+
+        if (questionTypes.should.test(queryLower)) {
+          if (title.includes('應該') || title.includes('建議') || title.includes('推荐')) {
+            score += 25;
+          }
+        }
+
+        if (questionTypes.order.test(queryLower)) {
+          if (title.includes('流程') || title.includes('順序') || title.includes('步驟') ||
+              title.includes('操作') || title.includes('指南')) {
+            score += 30;
+          }
+        }
+
+        // 特殊主題加分
+        if (queryLower.includes('tier') && queryLower.includes('生日')) {
+          if (title.includes('tier') && title.includes('生日')) {
+            score += 60; // 主題精確匹配
+          }
+        }
+
+        if (queryLower.includes('braze') || queryLower.includes('第三方')) {
+          if (title.includes('braze') || title.includes('追蹤')) {
+            score += 50; // 主題相關
+          }
+        }
+
+        if (queryLower.includes('batch') || queryLower.includes('expire')) {
+          if (title.includes('batch') || title.includes('expire')) {
+            score += 50;
+          }
+        }
+
+        // 層級關係問題
+        if ((queryLower.includes('brand') && queryLower.includes('group')) ||
+            (queryLower.includes('品牌') && queryLower.includes('組'))) {
+          if (title.includes('架構') || title.includes('層級') ||
+              title.includes('為什麼') || title.includes('先')) {
+            score += 40;
+          }
+        }
+
+        if (score > 0) {
+          results.push({
+            title: doc.title,
+            content: doc.content,
+            score: score,
+            url: doc.url
+          });
+        }
+      }
+
+      const sortedResults = results.sort((a, b) => b.score - a.score);
+      console.log('📊 搜索結果:', sortedResults.map(r => ({title: r.title, score: r.score})));
+      return sortedResults;
+    }
+
+    // 顯示消息
+    function displayMessage(content, type, sourceUrl = null) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}-message`;
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+
+      // Markdown 渲染
+      let html = content
+        .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\|(.+)\|/g, function(match) {
+          const cells = match.split('|').filter(cell => cell.trim());
+          if (cells[0].includes('---')) return '';
+          return '<tr>' + cells.map(cell => `<td>${cell.trim()}</td>`).join('') + '</tr>';
+        })
+        .replace(/^\d+\.\s+/gm, '<li>')
+        .replace(/^•\s+/gm, '<li>• ')
+        .replace(/\n/g, '<br>');
+
+      if (html.includes('<tr>')) {
+        html = html.replace(/(<tr>.*?<\/tr>)+/g, '<table>$&</table>');
+      }
+
+      contentDiv.innerHTML = html;
+
+      if (sourceUrl) {
+        const sourceLink = document.createElement('a');
+        sourceLink.href = sourceUrl;
+        sourceLink.target = '_blank';
+        sourceLink.style.cssText = 'display: inline-block; background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 4px; font-size: 11px; margin-top: 6px; text-decoration: none;';
+        sourceLink.textContent = '📄 查看完整文檔';
+        contentDiv.appendChild(sourceLink);
+      }
+
+      messageDiv.appendChild(contentDiv);
+
+      const chatContainer = document.getElementById('chatContainer');
+      chatContainer.appendChild(messageDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // 智能提取相關內容
+    function extractRelevantContent(content, query) {
+      const queryLower = query.toLowerCase();
+      const lines = content.split('\n');
+
+      // 識別問題類型
+      const isWhyQuestion = /為什麼|點解|why|原因/.test(queryLower);
+      const isHowQuestion = /如何|怎樣|怎麼|how/.test(queryLower);
+      const isOrderQuestion = /先|後|順序|次序/.test(queryLower);
+
+      let bestSection = '';
+      let bestScore = 0;
+      let currentSection = '';
+      let currentScore = 0;
+
+      // 逐行分析，找到最相關的段落
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+
+        // 標題開始新段落
+        if (line.startsWith('##') || line.startsWith('#')) {
+          // 評估上一個段落
+          if (currentScore > bestScore) {
+            bestScore = currentScore;
+            bestSection = currentSection;
+          }
+          // 開始新段落
+          currentSection = line + '\n';
+          currentScore = 0;
+        } else {
+          currentSection += line + '\n';
+
+          // 根據問題類型評估相關性
+          const lineLower = line.toLowerCase();
+
+          if (isWhyQuestion) {
+            if (lineLower.includes('為什麼') || lineLower.includes('原因') ||
+                lineLower.includes('因為') || lineLower.includes('由於') ||
+                lineLower.includes('直接答案') || lineLower.includes('詳細解釋')) {
+              currentScore += 20;
+            }
+          }
+
+          if (isHowQuestion) {
+            if (lineLower.includes('如何') || lineLower.includes('方法') ||
+                lineLower.includes('步驟') || lineLower.includes('操作')) {
+              currentScore += 20;
+            }
+          }
+
+          if (isOrderQuestion) {
+            if (lineLower.includes('順序') || lineLower.includes('先') ||
+                lineLower.includes('後') || lineLower.includes('步驟')) {
+              currentScore += 20;
+            }
+          }
+
+          // 關鍵詞匹配
+          if (lineLower.includes('brand') || lineLower.includes('品牌')) currentScore += 5;
+          if (lineLower.includes('group') || lineLower.includes('組')) currentScore += 5;
+          if (lineLower.includes('company') || lineLower.includes('公司')) currentScore += 3;
+        }
+      }
+
+      // 檢查最後一個段落
+      if (currentScore > bestScore) {
+        bestSection = currentSection;
+      }
+
+      // 如果沒有找到好的段落，返回前面的內容
+      if (bestScore < 10) {
+        return content.substring(0, 1200);
+      }
+
+      // 提取最佳段落（包含前後上下文）
+      let result = bestSection;
+      if (result.length > 1200) {
+        result = result.substring(0, 1200) + '\n\n...(內容過長)';
+      }
+
+      return result.trim();
+    }
+
+    // 發送消息
+    function sendMessage() {
+      const messageInput = document.getElementById('messageInput');
+      const message = messageInput.value.trim();
+
+      if (!message) return;
+
+      displayMessage(message, 'user');
+      messageInput.value = '';
+
+      const searchResults = searchKnowledge(message);
+
+      if (searchResults.length > 0) {
+        const topResult = searchResults[0];
+        const relevantContent = extractRelevantContent(topResult.content, message);
+
+        let response = `📋 根據 **${topResult.title}** 找到相關內容：\n\n`;
+        response += relevantContent;
+
+        response += `\n\n💡 ${isGitHubMode ? 'GitHub' : '本地'}知識庫`;
+
+        displayMessage(response, 'bot', topResult.url);
+      } else {
+        let response = `😔 沒有找到與「${message}」直接相關的內容\n\n`;
+        response += `💡 可用主題：\n`;
+        response += `• Brand Group 關係\n`;
+        response += `• 組織架構\n`;
+        response += `• 為什麼要先創建組\n`;
+        response += `• 新上架流程\n`;
+        response += `• 創建品牌\n`;
+        response += `• 品牌必填位\n`;
+        response += `• 店鋪必填位\n`;
+        response += `• Group必填位\n\n`;
+        response += `💡 嘗試使用不同的關鍵詞`;
+
+        displayMessage(response, 'bot');
+      }
+    }
+
+    // 初始化
+    window.addEventListener('DOMContentLoaded', () => {
+      // 初始化本地知識庫
+      initLocalKnowledge();
+
+      // 綁定事件
+      document.getElementById('sendButton').addEventListener('click', sendMessage);
+      document.getElementById('messageInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          sendMessage();
+        }
+      });
+
+      // 聚焦輸入框
+      document.getElementById('messageInput').focus();
+    });
+  </script>
+</body>
+</html>
