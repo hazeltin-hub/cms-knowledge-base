@@ -1625,5 +1625,155 @@ CMS 的組織架構分為三層：
 **代碼參考**：
 - [CompanyAction 代碼參考](../cms-code-reference/CompanyAction-reference.md)
 
-**最後更新**：2026-07-03
+---
+
+# 🆕 Branded App 詳細設定指南
+
+## Branded App 完整設定流程
+
+### Step 1: 啟用 Brand Profile
+
+**目的：** 啟用 Branded Profile 功能
+
+**操作步驟：**
+1. 前往 **Company > Brands**
+2. 選擇目標 Brand
+3. ✅ **Tick "Enable Brand Profile"**
+4. 儲存後就會有 Branded Profile 顯示
+
+**檢查：**
+- [ ] Brand Profile 已啟用
+- [ ] Branded Profile 區塊顯示正常
+
+### Step 2: 設置背景圖
+
+**設定位置：** Company > Brands > Branded App > Thumbnail
+
+**操作步驟：**
+1. 在 Branded App 區塊找到 **Thumbnail**
+2. 📷 **上傳背景圖**
+3. 儲存設定
+
+**圖片建議：**
+- 解析度：建議高解析度圖片
+- 格式：JPG/PNG
+- 大小：約 1MB（參考其他 Assets 模組）
+
+### Step 3: 設置條款及細則
+
+**設定位置：** Company > Brands > Branded App > Terms and Conditions
+
+**要求：** 必須填寫三種語言版本
+
+**語言版本：**
+- 🇬🇧 **英文版本**
+- 🇨🇳 **中文版本**
+- 🌍 **其他語言版本**（按需要）
+
+**操作步驟：**
+1. 找到 **Terms and Conditions** 區塊
+2. 填寫英文 T&C
+3. 填寫中文 T&C
+4. 如需要，填寫其他語言 T&C
+5. 儲存設定
+
+### Step 4: 設置簡介
+
+**設定位置：** Company > Brands > Short Description (Local Language)
+
+**操作步驟：**
+1. 找到 **Short Description (Local Language)** 欄位
+2. 📝 **填寫品牌簡介**
+3. 儲存設定
+
+**內容建議：**
+- 品牌定位
+- 核心特色
+- 目標客群
+- 品牌故事（簡短）
+
+### Step 5: 設置 App IDs
+
+**設定位置：** Company > Brands > Branded App
+
+**需要的 App IDs：**
+- 📱 **Android App ID** (AOS)
+- 📱 **iOS App ID**
+
+**操作步驟：**
+1. 在 Branded App 區塊找到 App IDs 設定
+2. 輸入 **Android App ID**
+3. 輸入 **iOS App ID**
+4. 儲存設定
+
+**ID 來源：**
+- Google Play Store URL (Android)
+- Apple App Store URL (iOS)
+
+---
+
+## Branded App 類型選擇
+
+### Non Storellet Only vs Storellet Only
+
+| Brand 類型 | 設定選項 | 說明 | 適用 Brand |
+|---|---|---|---|
+| **自有 App** | Non Storellet Only | 使用自有 Brand App，非 Storellet 系統 | KFC、PHD |
+| **Storellet App** | Storellet Only | 使用 Storellet App | 其他大部分 Brand |
+
+**設定位置：** 在 Brand 設定頁面的 App 類型選項
+
+**設定建議：**
+- KFC/PHD → 選擇 **Non Storellet Only**
+- 其他 Brand → 選擇 **Storellet Only**
+
+---
+
+## Brand 進階設定
+
+### 人均消費上下限
+
+**設定位置：** Brand > Lower Price & Higher Price
+
+| 設定欄位 | 說明 | 用途 | 參考範圍 |
+|---|---|---|---|
+| **Lower Price** | 人均消費下限 | 設定最低消費金額參考 | 按品牌定位 |
+| **Higher Price** | 人均消費上限 | 設定最高消費金額參考 | 按品牌定位 |
+
+**操作步驟：**
+1. 前往目標 Brand 設定頁面
+2. 找到 **Lower Price** 欄位
+3. 輸入適當金額
+4. 找到 **Higher Price** 欄位
+5. 輸入適當金額
+6. 儲存設定
+
+**使用情況：**
+- 前台顯示人均消費範圍
+- 會員分群參考
+- 營商分析參考
+
+---
+
+## 操作檢查清單
+
+### Branded App 設定檢查
+
+- [ ] Brand Profile 已啟用
+- [ ] 背景圖已上傳至 Thumbnail
+- [ ] T&C 已填寫三種語言版本
+- [ ] Short Description 已填寫
+- [ ] Android App ID 已設置
+- [ ] iOS App ID 已設置
+- [ ] App 類型選擇正確（Non Storellet/Storellet）
+- [ ] 前台顯示測試
+
+### Brand 設定檢查
+
+- [ ] Lower Price 已設定
+- [ ] Higher Price 已設定
+
+---
+
+**最後更新**：2026-07-17
 **適用角色**：系統管理員、運營人員
